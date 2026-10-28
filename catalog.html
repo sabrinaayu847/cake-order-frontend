@@ -533,112 +533,67 @@
       }
     }
 
-    function renderProducts() {
-      const keyword = searchInput.value.trim().toLowerCase();
-      const category = categoryFilter.value;
+    
+function renderProducts() {
+  productList.innerHTML = "";
 
-      const filtered = products.filter(product => {
-        const matchesName = (product.name || "")
-          .toLowerCase()
-          .includes(keyword);
+  if (!products.length) {
+    productList.innerHTML =
+      '<p class="empty">Belum ada produk.</p>';
+    return;
+  }
 
-        const matchesCategory =
-          !category || (product.category || "") === category;
+  products.forEach((product) => {
+    const card = document.createElement("article");
+    card.className = "product-card";
 
-        return matchesName && matchesCategory;
-      });
+    const image = document.createElement("img");
+    image.className = "product-image";
+    image.src =
+      product.image_data || product.image_url || "";
+    image.alt = product.name || "Kue";
 
-      if (!filtered.length) {
-        productList.innerHTML =
-          '<p class="empty">Produk tidak ditemukan.</p>';
-        return;
-      }
+    const info = document.createElement("div");
+    info.className = "product-info";
 
-      productList.replaceChildren();
+    const name = document.createElement("h3");
+    name.textContent = product.name || "Tanpa nama";
 
-      filtered.forEach(product => {
-        const card = document.createElement("article");
-        card.className = "product-card";
+    const description = document.createElement("p");
+    description.textContent =
+      product.description || "Tidak ada deskripsi";
 
-        const image = safeImageUrl(
-          product.image_data || product.image_url || ""
-        );
+    const price = document.createElement("p");
+    price.className = "price";
+    price.textContent =
+      "Rp " + (Number(product.price) || 0).toLocaleString("id-ID");
 
-        if (image) {
-          const img = document.createElement("img");
-          img.src = image;
-          img.alt = product.name || "Foto kue";
-          img.loading = "lazy";
-          img.onerror = () => {
-            const placeholder = document.createElement("div");
-            placeholder.className = "no-image";
-            placeholder.textContent = "Foto tidak tersedia";
-            img.replaceWith(placeholder);
-          };
-          card.appendChild(img);
-        } else {
-          const placeholder = document.createElement("div");
-          placeholder.className = "no-image";
-          placeholder.textContent = "Foto belum tersedia";
-          card.appendChild(placeholder);
-        }
+    const stockAmount = Number(product.stock) || 0;
+    const hasStock = stockAmount > 0;
 
-        const info = document.createElement("div");
-        info.className = "product-info";
+    const stock = document.createElement("p");
+    stock.textContent = hasStock
+      ? "Stok: " + stockAmount
+      : "Stok habis";
 
-        const name = document.createElement("h3");
-        name.textContent = product.name || "Kue";
+    const addButton = document.createElement("button");
+    addButton.type = "button";
+    addButton.className = "btn btn-primary add-to-cart";
+    addButton.textContent = hasStock
+      ? "🛒 Tambah ke Keranjang"
+      : "Stok Habis";
+    addButton.disabled = !hasStock;
 
-        const description = document.createElement("p");
-        description.className = "description";
-        description.textContent =
-          product.description || "Kue pilihan untuk momen spesial.";
+    addButton.addEventListener("click", () => {
+      addToCart(product.id);
+    });
 
-        const price = document.createElement("p");
-        price.className = "price";
-        price.textContent = rupiah(Number(product.price) || 0);
+    info.append(name, description, price, stock, addButton);
+    card.append(image, info);
+    productList.appendChild(card);
+  });
+}
 
-        const stock = document.createElement("p");
-        const stockAmount = Math.max(0, Number(product.stock) || 0);
-        const hasStock = stockAmount > 0;
-
-        stock.className = hasStock ? "stock" : "stock out-of-stock";
-        stock.textContent = hasStock
-          ? "Stok tersedia: " + stockAmount
-          : "Stok habis";
-
-        const addButton = document.createElement("button");
-        addButton.type = "button";
-        addButton.className = "btn btn-primary add-to-cart";
-        addButton.textContent = hasStock
-          ? "🛒 Tambah ke Keranjang"
-          : "Stok Habis";
-        addButton.disabled = !hasStock;
-        addButton.addEventListener("click", () => addToCart(product.id));
-
-        
-const addButton = document.createElement("button");
-addButton.type = "button";
-addButton.className = "btn btn-primary add-to-cart";
-
-const hasStock = Number(product.stock) > 0;
-
-addButton.textContent = hasStock
-  ? "🛒 Tambah ke Keranjang"
-  : "Stok Habis";
-
-addButton.disabled = !hasStock;
-
-addButton.addEventListener("click", () => {
-  addToCart(product.id);
-});
-
-info.append(name, description, price, stock, addButton);
-card.appendChild(info);
-productList.appendChild(card);
-
-      });
-    }
 
     async function loadProducts() {
       try {
@@ -691,92 +646,6 @@ productList.appendChild(card);
     window.addEventListener("cakeOrderCartUpdated", updateCartCount);
 
     updateCartCount();
-    loadProducts();
-  </script>
-</body>
-</html>
-          placeholder.textContent = "Foto belum tersedia";
-          card.appendChild(placeholder);
-        }
-
-        const info = document.createElement("div");
-        info.className = "product-info";
-
-        const name = document.createElement("h3");
-        name.textContent = product.name || "Kue";
-
-        const description = document.createElement("p");
-        description.className = "description";
-        description.textContent =
-          product.description || "Kue pilihan untuk momen spesial.";
-
-        const price = document.createElement("p");
-        price.className = "price";
-        price.textContent = rupiah(Number(product.price) || 0);
-
-        const stock = document.createElement("p");
-const hasStock = Number(product.stock) > 0;
-
-stock.className = hasStock
-  ? "stock"
-  : "stock out-of-stock";
-
-stock.textContent = hasStock
-  ? "Stok tersedia: " + product.stock
-  : "Stok habis";
-
-        info.append(name, description, price, stock);
-        card.appendChild(info);
-        productList.appendChild(card);
-      });
-    }
-
-    async function loadProducts() {
-      try {
-        const response = await fetch(API_URL + "/api/products");
-
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data katalog.");
-        }
-
-        const result = await response.json();
-
-        products = Array.isArray(result)
-          ? result
-          : result.products || result.data || [];
-
-        const categories = [
-          ...new Set(
-            products
-              .map(product => product.category)
-              .filter(Boolean)
-          )
-        ];
-
-        categories.sort().forEach(category => {
-          const option = document.createElement("option");
-          option.value = category;
-          option.textContent = category;
-          categoryFilter.appendChild(option);
-        });
-
-        renderProducts();
-      } catch (error) {
-        productList.replaceChildren();
-
-        const message = document.createElement("p");
-        message.className = "empty";
-        message.textContent =
-          "Katalog belum dapat dimuat. Silakan coba lagi nanti.";
-
-        productList.appendChild(message);
-        console.error(error);
-      }
-    }
-
-    searchInput.addEventListener("input", renderProducts);
-    categoryFilter.addEventListener("change", renderProducts);
-
     loadProducts();
   </script>
 </body>
