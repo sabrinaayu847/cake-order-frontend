@@ -195,10 +195,25 @@
           <div class="brand-sub">Panel pengelolaan toko</div>
         </div>
       </div>
-      <div class="top-actions">
-        <div class="user-pill"><span class="user-dot"></span><span id="currentUsername">Kasir</span></div>
-        <button class="btn btn-secondary btn-small" id="logoutButton" type="button">Keluar ↗</button>
-      </div>
+      
+<div class="top-actions">
+  <div class="user-pill">
+    <span class="user-dot"></span>
+    <span id="currentUsername">Kasir</span>
+  </div>
+
+  <a href="./notifikasi.html" class="btn btn-secondary btn-small">
+    🔔 Notifikasi
+    <span id="notificationBadge"
+      style="background:#A0233D;color:white;border-radius:50%;
+      padding:2px 7px;font-size:12px;">0</span>
+  </a>
+
+  <button class="btn btn-secondary btn-small" id="logoutButton" type="button">
+    Keluar ↗
+  </button>
+</div>
+
     </header>
 
     <main>
@@ -815,6 +830,48 @@ if (removeImageButton) {
     }
   });
 }
+    
+async function updateNotificationBadge() {
+  const badge = document.getElementById("notificationBadge");
+  if (!badge || !token) return;
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/cashier/orders`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) return;
+
+    const result = await response.json();
+
+    const orders = Array.isArray(result.data?.orders)
+      ? result.data.orders
+      : Array.isArray(result.orders)
+        ? result.orders
+        : Array.isArray(result.data)
+          ? result.data
+          : [];
+
+    const count = orders.filter(order =>
+      order.status === "pending_payment" ||
+      order.status === "awaiting_verification"
+    ).length;
+
+    badge.textContent = count;
+    badge.style.display = count > 0 ? "inline-flex" : "none";
+  } catch (error) {
+    console.error("Gagal memuat notifikasi:", error);
+  }
+}
+
+updateNotificationBadge();
+setInterval(updateNotificationBadge, 10000);
+    
   </script>
 </body>
 </html>
