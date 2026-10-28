@@ -616,9 +616,27 @@
         addButton.disabled = !hasStock;
         addButton.addEventListener("click", () => addToCart(product.id));
 
-        info.append(name, description, price, stock, addButton);
-        card.appendChild(info);
-        productList.appendChild(card);
+        
+const addButton = document.createElement("button");
+addButton.type = "button";
+addButton.className = "btn btn-primary add-to-cart";
+
+const hasStock = Number(product.stock) > 0;
+
+addButton.textContent = hasStock
+  ? "🛒 Tambah ke Keranjang"
+  : "Stok Habis";
+
+addButton.disabled = !hasStock;
+
+addButton.addEventListener("click", () => {
+  addToCart(product.id);
+});
+
+info.append(name, description, price, stock, addButton);
+card.appendChild(info);
+productList.appendChild(card);
+
       });
     }
 
