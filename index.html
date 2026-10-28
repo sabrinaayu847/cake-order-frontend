@@ -23,304 +23,1015 @@
       --shadow: 0 18px 50px rgba(94, 29, 48, .10);
       --radius: 18px;
     }
+
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; background: var(--bg); color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    button, input, textarea, select { font: inherit; }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
     button { cursor: pointer; }
     .hidden { display: none !important; }
     .muted { color: var(--muted); }
-    .eyebrow { color: var(--brand); font-size: .75rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+
+    .eyebrow {
+      color: var(--brand);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      border: 1px solid transparent; border-radius: 12px; padding: 11px 15px;
-      font-weight: 750; transition: .16s ease; text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 750;
+      transition: .16s ease;
+      text-decoration: none;
     }
-    .btn:disabled { opacity: .55; cursor: wait; }
-    .btn-primary { background: var(--brand); color: white; }
-    .btn-primary:hover { background: var(--brand-dark); }
-    .btn-secondary { background: white; color: var(--ink); border-color: var(--line); }
-    .btn-secondary:hover { background: var(--surface-soft); }
-    .btn-danger { background: var(--red-soft); color: var(--red); border-color: #f5d0d0; }
-    .btn-small { padding: 8px 10px; border-radius: 10px; font-size: .86rem; }
-    .icon-btn { border: 1px solid var(--line); background: white; border-radius: 10px; padding: 8px 10px; color: var(--ink); }
-    .icon-btn:hover { background: var(--surface-soft); }
-    .field { display: grid; gap: 7px; }
-    .field label { font-size: .88rem; font-weight: 750; }
-    .field input, .field textarea, .field select, .search {
-      width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px;
-      color: var(--ink); background: #fff; outline: none;
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: wait;
     }
-    .field input:focus, .field textarea:focus, .field select:focus, .search:focus {
-      border-color: #d58b6d; box-shadow: 0 0 0 3px rgba(169,79,50,.10);
+
+    .btn-primary {
+      background: var(--brand);
+      color: white;
     }
-    .field textarea { resize: vertical; min-height: 84px; }
-    .field small { color: var(--muted); font-size: .78rem; }
-    .login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+
+    .btn-primary:hover {
+      background: var(--brand-dark);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-soft);
+    }
+
+    .btn-danger {
+      background: var(--red-soft);
+      color: var(--red);
+      border-color: #f5d0d0;
+    }
+
+    .btn-small {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: .86rem;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: var(--ink);
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-soft);
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: .88rem;
+      font-weight: 750;
+    }
+
+    .field input,
+    .field textarea,
+    .field select,
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus,
+    .search:focus {
+      border-color: #d58b6d;
+      box-shadow: 0 0 0 3px rgba(169,79,50,.10);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .field small {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
     .login-card {
-      width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line);
-      border-radius: 26px; box-shadow: var(--shadow); overflow: hidden;
+      width: min(100%, 440px);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
-    .login-top { padding: 30px 30px 24px; background: linear-gradient(135deg, #F5D8A0, #F3E0D2); border-bottom: 1px solid var(--line); }
-    .brand-mark { width: 48px; height: 48px; display: grid; place-items: center; background: var(--brand); color: #fff; border-radius: 15px; font-size: 1.5rem; margin-bottom: 20px; }
-    h1, h2, h3, p { margin-top: 0; }
-    .login-top h1 { margin: 8px 0; font-size: 1.85rem; letter-spacing: -.04em; }
-    .login-top p { margin-bottom: 0; color: var(--muted); line-height: 1.55; }
-    .login-form { padding: 26px 30px 30px; display: grid; gap: 17px; }
-    .login-form .btn { width: 100%; margin-top: 4px; }
-    .notice { padding: 11px 13px; border-radius: 12px; font-size: .9rem; line-height: 1.45; }
-    .notice.error { color: var(--red); background: var(--red-soft); border: 1px solid #f4cccc; }
-    .notice.success { color: var(--green); background: var(--green-soft); border: 1px solid #cdebd9; }
-    .app-shell { min-height: 100vh; }
+
+    .login-top {
+      padding: 30px 30px 24px;
+      background: linear-gradient(135deg, #F5D8A0, #F3E0D2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 15px;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    .login-top h1 {
+      margin: 8px 0;
+      font-size: 1.85rem;
+      letter-spacing: -.04em;
+    }
+
+    .login-top p {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .login-form {
+      padding: 26px 30px 30px;
+      display: grid;
+      gap: 17px;
+    }
+
+    .login-form .btn {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .notice {
+      padding: 11px 13px;
+      border-radius: 12px;
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .notice.error {
+      color: var(--red);
+      background: var(--red-soft);
+      border: 1px solid #f4cccc;
+    }
+
+    .notice.success {
+      color: var(--green);
+      background: var(--green-soft);
+      border: 1px solid #cdebd9;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
     .topbar {
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      padding: 17px clamp(18px, 4vw, 54px); background: rgba(221,155,167,.94);
-      border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 17px clamp(18px, 4vw, 54px);
+      background: rgba(221,155,167,.94);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
     }
-    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .brand .brand-mark { width: 42px; height: 42px; margin: 0; border-radius: 13px; font-size: 1.25rem; flex: 0 0 auto; }
-    .brand-name { font-weight: 850; letter-spacing: -.025em; }
-    .brand-sub { color: var(--muted); font-size: .78rem; margin-top: 2px; }
-    .top-actions { display: flex; align-items: center; gap: 10px; }
-    .user-pill { display: flex; align-items: center; gap: 8px; background: var(--surface-soft); border-radius: 999px; padding: 8px 12px; font-size: .86rem; font-weight: 750; }
-    .user-dot { width: 8px; height: 8px; background: #3b9a68; border-radius: 50%; }
-    main { width: min(1200px, 100%); margin: 0 auto; padding: 35px clamp(18px, 4vw, 42px) 60px; }
-    .page-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 27px; }
-    .page-heading h1 { margin: 7px 0 8px; font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.05em; }
-    .page-heading p { color: var(--muted); margin: 0; line-height: 1.5; }
-    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 26px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
-    .stat-label { color: var(--muted); font-size: .84rem; font-weight: 650; }
-    .stat-value { font-size: 1.8rem; font-weight: 850; letter-spacing: -.04em; margin-top: 7px; }
-    .stat-icon { float: right; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: var(--surface-soft); }
-    .catalog-panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 28px rgba(91,51,32,.035); }
-    .panel-head { padding: 21px 22px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-    .panel-head h2 { margin: 0 0 5px; font-size: 1.12rem; letter-spacing: -.02em; }
-    .panel-head p { color: var(--muted); margin: 0; font-size: .87rem; }
-    .filters { padding: 15px 22px; display: flex; gap: 11px; border-bottom: 1px solid var(--line); background: #fff8f5; }
-    .search-wrap { flex: 1; min-width: 160px; position: relative; }
-    .search { padding-left: 38px; }
-    .search-icon { position: absolute; left: 13px; top: 12px; color: var(--muted); }
-    .filter-select { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--ink); background: #fff; min-width: 145px; }
-    .table-wrap { overflow-x: auto; }
-    table { border-collapse: collapse; width: 100%; min-width: 780px; }
-    th { text-align: left; color: var(--muted); font-size: .75rem; letter-spacing: .07em; text-transform: uppercase; background: #fff8f5; font-weight: 800; }
-    th, td { padding: 15px 18px; border-bottom: 1px solid #f5e9e1; vertical-align: middle; }
-    tbody tr:last-child td { border-bottom: 0; }
-    tbody tr:hover { background: #fff8f5; }
-    .product-cell { display: flex; align-items: center; gap: 12px; min-width: 230px; }
-    .product-image { width: 54px; height: 54px; object-fit: cover; border-radius: 13px; background: var(--surface-soft); border: 1px solid var(--line); flex: 0 0 auto; }
-    .product-placeholder { display: grid; place-items: center; font-size: 1.4rem; }
-    .product-name { font-weight: 800; margin-bottom: 4px; }
-    .product-description { color: var(--muted); font-size: .8rem; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .price { font-weight: 800; white-space: nowrap; }
-    .category-chip, .status-chip { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 999px; font-size: .78rem; font-weight: 750; white-space: nowrap; }
-    .category-chip { background: #F5D8A0; color: #6f2638; }
-    .status-chip.active { background: var(--green-soft); color: var(--green); }
-    .status-chip.inactive { background: #f2ece8; color: #76645a; }
-    .row-actions { display: flex; gap: 7px; justify-content: end; }
-    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
-    .empty-icon { font-size: 2.4rem; margin-bottom: 10px; }
-    .empty-state strong { color: var(--ink); display: block; margin-bottom: 5px; }
-    .panel-foot { display: flex; justify-content: space-between; gap: 12px; padding: 14px 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; background: #fff8f5; }
-    .loading { opacity: .6; pointer-events: none; }
-    .modal-backdrop { position: fixed; inset: 0; z-index: 30; background: rgba(47,30,23,.48); display: grid; place-items: center; padding: 18px; overflow-y: auto; }
-    .modal { width: min(100%, 650px); background: white; border-radius: 22px; box-shadow: 0 24px 80px rgba(0,0,0,.2); overflow: hidden; margin: auto; }
-    .modal-head { padding: 22px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: start; justify-content: space-between; gap: 16px; }
-    .modal-head h2 { margin: 0 0 5px; font-size: 1.35rem; }
-    .modal-head p { margin: 0; color: var(--muted); font-size: .88rem; }
-    .modal-body { padding: 23px 24px 25px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .span-2 { grid-column: 1 / -1; }
-    .modal-actions { display: flex; justify-content: end; gap: 10px; margin-top: 22px; }
-    .toast-area { position: fixed; top: 82px; right: 20px; z-index: 60; display: grid; gap: 9px; width: min(380px, calc(100vw - 40px)); }
-    .toast { padding: 13px 15px; border-radius: 13px; box-shadow: var(--shadow); background: white; border: 1px solid var(--line); font-size: .9rem; }
-    .toast.error { border-color: #e7b0bc; color: var(--red); }
-    .toast.success { border-color: #cce8d6; color: var(--green); }
-    .confirm-copy { line-height: 1.55; color: var(--muted); }
-    .confirm-actions { display: flex; justify-content: end; gap: 10px; margin-top: 20px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand .brand-mark {
+      width: 42px;
+      height: 42px;
+      margin: 0;
+      border-radius: 13px;
+      font-size: 1.25rem;
+      flex: 0 0 auto;
+    }
+
+    .brand-name {
+      font-weight: 850;
+      letter-spacing: -.025em;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: .78rem;
+      margin-top: 2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-soft);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: .86rem;
+      font-weight: 750;
+    }
+
+    .user-dot {
+      width: 8px;
+      height: 8px;
+      background: #3b9a68;
+      border-radius: 50%;
+    }
+
+    main {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      padding: 35px clamp(18px, 4vw, 42px) 60px;
+    }
+
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 27px;
+    }
+
+    .page-heading h1 {
+      margin: 7px 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      letter-spacing: -.05em;
+    }
+
+    .page-heading p {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 650;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 850;
+      letter-spacing: -.04em;
+      margin-top: 7px;
+    }
+
+    .stat-icon {
+      float: right;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--surface-soft);
+    }
+
+    .catalog-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(91,51,32,.035);
+    }
+
+    .panel-head {
+      padding: 21px 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .panel-head h2 {
+      margin: 0 0 5px;
+      font-size: 1.12rem;
+      letter-spacing: -.02em;
+    }
+
+    .panel-head p {
+      color: var(--muted);
+      margin: 0;
+      font-size: .87rem;
+    }
+
+    .filters {
+      padding: 15px 22px;
+      display: flex;
+      gap: 11px;
+      border-bottom: 1px solid var(--line);
+      background: #fff8f5;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 160px;
+      position: relative;
+    }
+
+    .search {
+      padding-left: 38px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 12px;
+      color: var(--muted);
+    }
+
+    .filter-select {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: #fff;
+      min-width: 145px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 780px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: .75rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      background: #fff8f5;
+      font-weight: 800;
+    }
+
+    th, td {
+      padding: 15px 18px;
+      border-bottom: 1px solid #f5e9e1;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #fff8f5;
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 230px;
+    }
+
+    .product-image {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 13px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .product-placeholder {
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+    }
+
+    .image-upload-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .image-preview {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .image-preview-placeholder {
+      display: grid;
+      place-items: center;
+      font-size: 2.5rem;
+      color: var(--muted);
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .product-name {
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .product-description {
+      color: var(--muted);
+      font-size: .8rem;
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .price {
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .category-chip,
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .category-chip {
+      background: #F5D8A0;
+      color: #6f2638;
+    }
+
+    .status-chip.active {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .status-chip.inactive {
+      background: #f2ece8;
+      color: #76645a;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+      justify-content: end;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+    }
+
+    .empty-state strong {
+      color: var(--ink);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .panel-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .82rem;
+      background: #fff8f5;
+    }
+
+    .loading {
+      opacity: .6;
+      pointer-events: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background: rgba(47,30,23,.48);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+    .modal {
+      width: min(100%, 650px);
+      background: white;
+      border-radius: 22px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.2);
+      overflow: hidden;
+      margin: auto;
+    }
+
+    .modal-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-head h2 {
+      margin: 0 0 5px;
+      font-size: 1.35rem;
+    }
+
+    .modal-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .modal-body {
+      padding: 23px 24px 25px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .toast-area {
+      position: fixed;
+      top: 82px;
+      right: 20px;
+      z-index: 60;
+      display: grid;
+      gap: 9px;
+      width: min(380px, calc(100vw - 40px));
+    }
+
+    .toast {
+      padding: 13px 15px;
+      border-radius: 13px;
+      box-shadow: var(--shadow);
+      background: white;
+      border: 1px solid var(--line);
+      font-size: .9rem;
+    }
+
+    .toast.error {
+      border-color: #e7b0bc;
+      color: var(--red);
+    }
+
+    .toast.success {
+      border-color: #cce8d6;
+      color: var(--green);
+    }
+
+    .confirm-copy {
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
     @media (max-width: 720px) {
-      .topbar { padding: 13px 16px; }
-      .brand-sub, .user-pill { display: none; }
-      main { padding-top: 25px; }
-      .page-heading { align-items: start; flex-direction: column; }
-      .stats { gap: 9px; }
-      .stat-card { padding: 13px; }
-      .stat-value { font-size: 1.45rem; }
-      .stat-icon { display: none; }
-      .filters { flex-direction: column; padding: 14px; }
-      .filter-select { width: 100%; }
-      .panel-head { padding: 17px 15px; }
-      .panel-foot { padding: 13px 15px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .span-2 { grid-column: auto; }
-      .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
-      .top-actions .btn { padding: 9px 10px; }
+      .topbar {
+        padding: 13px 16px;
+      }
+
+      .brand-sub,
+      .user-pill {
+        display: none;
+      }
+
+      main {
+        padding-top: 25px;
+      }
+
+      .page-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .stats {
+        gap: 9px;
+      }
+
+      .stat-card {
+        padding: 13px;
+      }
+
+      .stat-value {
+        font-size: 1.45rem;
+      }
+
+      .stat-icon {
+        display: none;
+      }
+
+      .filters {
+        flex-direction: column;
+        padding: 14px;
+      }
+
+      .filter-select {
+        width: 100%;
+      }
+
+      .panel-head {
+        padding: 17px 15px;
+      }
+
+      .panel-foot {
+        padding: 13px 15px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .span-2 {
+        grid-column: auto;
+      }
+
+      .modal-head,
+      .modal-body {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .top-actions .btn {
+        padding: 9px 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="loginScreen" class="login-wrap">
+
+
+  <div id="loginView" class="login-wrap">
     <section class="login-card">
       <div class="login-top">
         <div class="brand-mark">🎂</div>
-        <div class="eyebrow">Cake Order · Admin</div>
-        <h1>Selamat datang.</h1>
-        <p>Masuk ke dashboard kasir untuk mengelola katalog kue dan ketersediaan produk.</p>
+        <div class="eyebrow">Cake Order</div>
+        <h1>Dashboard Kasir</h1>
+        <p>Masuk untuk mengelola produk dan stok toko kue.</p>
       </div>
+
       <form id="loginForm" class="login-form">
-        <div id="loginMessage" class="notice error hidden" role="alert"></div>
+        <div id="loginMessage" class="notice error hidden"></div>
+
         <div class="field">
           <label for="username">Username kasir</label>
-          <input id="username" name="username" autocomplete="username" required maxlength="40" placeholder="Masukkan username">
+          <input id="username" name="username" autocomplete="username"
+            required placeholder="Masukkan username">
         </div>
+
         <div class="field">
           <label for="password">Password</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Masukkan password">
+          <input id="password" name="password" type="password"
+            autocomplete="current-password" required
+            placeholder="Masukkan password">
         </div>
-        <button class="btn btn-primary" id="loginButton" type="submit">Masuk ke dashboard <span aria-hidden="true">→</span></button>
-        <p class="muted" style="font-size:.78rem;line-height:1.5;margin:0">Gunakan akun kasir yang sudah dibuat melalui endpoint setup. Jangan bagikan token login kepada orang lain.</p>
+
+        <button class="btn btn-primary" id="loginButton" type="submit">
+          Masuk ke dashboard
+        </button>
       </form>
     </section>
   </div>
 
-  <div id="appScreen" class="app-shell hidden">
+  <div id="appView" class="app-shell hidden">
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">🎂</div>
         <div>
           <div class="brand-name">Cake Order</div>
-          <div class="brand-sub">Panel pengelolaan toko</div>
+          <div class="brand-sub">Panel pengelolaan toko kue</div>
         </div>
       </div>
+
       <div class="top-actions">
-        <div class="user-pill"><span class="user-dot"></span><span id="currentUsername">Kasir</span></div>
-        <button class="btn btn-secondary btn-small" id="logoutButton" type="button">Keluar ↗</button>
+        <div class="user-pill">
+          <span class="user-dot"></span>
+          <span id="cashierLabel">Kasir</span>
+        </div>
+        <button class="btn btn-secondary btn-small"
+          id="logoutButton" type="button">Keluar</button>
       </div>
     </header>
 
     <main>
       <section class="page-heading">
         <div>
-          <div class="eyebrow">Ruang kerja kasir</div>
-          <h1>Kelola katalog</h1>
-          <p>Atur produk, harga, stok, dan ketersediaan kue dari satu tempat.</p>
+          <div class="eyebrow">Ringkasan toko</div>
+          <h1>Produk Kue</h1>
+          <p>Kelola katalog, harga, foto, dan stok produkmu.</p>
         </div>
-        <button class="btn btn-primary" id="addProductButton" type="button">＋ Tambah produk</button>
+        <button class="btn btn-primary" id="addProductButton" type="button">
+          <span>＋</span> Tambah produk
+        </button>
       </section>
 
-      <section class="stats" aria-label="Ringkasan katalog">
+      <section class="stats">
         <article class="stat-card">
           <span class="stat-icon">🧁</span>
           <div class="stat-label">Total produk</div>
-          <div class="stat-value" id="totalProducts">—</div>
+          <div class="stat-value" id="totalProducts">0</div>
         </article>
+
         <article class="stat-card">
-          <span class="stat-icon">✓</span>
+          <span class="stat-icon">✨</span>
           <div class="stat-label">Produk aktif</div>
-          <div class="stat-value" id="activeProducts">—</div>
+          <div class="stat-value" id="activeProducts">0</div>
         </article>
+
         <article class="stat-card">
-          <span class="stat-icon">◷</span>
-          <div class="stat-label">Produk nonaktif</div>
-          <div class="stat-value" id="inactiveProducts">—</div>
+          <span class="stat-icon">📦</span>
+          <div class="stat-label">Stok habis</div>
+          <div class="stat-value" id="outOfStock">0</div>
         </article>
       </section>
 
       <section class="catalog-panel">
         <div class="panel-head">
           <div>
-            <h2>Semua produk</h2>
-            <p>Produk nonaktif tetap tersimpan dan tidak ditampilkan ke pelanggan.</p>
+            <h2>Daftar produk</h2>
+            <p>Produk yang dikelola oleh kasir.</p>
           </div>
-          <button class="btn btn-secondary btn-small" id="refreshButton" type="button">↻ Muat ulang</button>
+          <button class="btn btn-secondary btn-small"
+            id="refreshButton" type="button">↻ Muat ulang</button>
         </div>
+
         <div class="filters">
           <div class="search-wrap">
-            <span class="search-icon" aria-hidden="true">⌕</span>
-            <input class="search" id="searchInput" type="search" placeholder="Cari nama atau kategori produk…" aria-label="Cari produk">
+            <span class="search-icon">⌕</span>
+            <input class="search" id="searchInput"
+              placeholder="Cari nama produk atau kategori...">
           </div>
-          <select class="filter-select" id="statusFilter" aria-label="Filter status">
+
+          <select class="filter-select" id="statusFilter"
+            aria-label="Filter status">
             <option value="all">Semua status</option>
             <option value="active">Aktif</option>
             <option value="inactive">Nonaktif</option>
           </select>
-          <select class="filter-select" id="categoryFilter" aria-label="Filter kategori">
-            <option value="all">Semua kategori</option>
-          </select>
         </div>
-        <div id="catalogContent">
-          <div class="empty-state"><div class="empty-icon">🧁</div><strong>Memuat katalog…</strong>Mohon tunggu sebentar.</div>
+
+        <div id="catalogMessage" class="notice error hidden"
+          style="margin:16px"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Status</th>
+                <th style="text-align:right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
+          </table>
         </div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-icon">🧁</div>
+          <strong id="emptyTitle">Belum ada produk</strong>
+          <span id="emptyDescription">
+            Tambahkan produk pertamamu untuk memulai.
+          </span>
+        </div>
+
         <div class="panel-foot">
-          <span id="resultCount">Memuat produk…</span>
-          <span>Perubahan tersimpan ke database</span>
+          <span id="productCountLabel">0 produk</span>
+          <span>Dashboard Kasir</span>
         </div>
       </section>
     </main>
   </div>
 
-  <div id="productModalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <section class="modal">
+  <!-- Modal tambah/edit produk -->
+  <div id="productModalBackdrop" class="modal-backdrop hidden">
+    <section class="modal" role="dialog" aria-modal="true"
+      aria-labelledby="productModalTitle">
       <div class="modal-head">
         <div>
-          <h2 id="modalTitle">Tambah produk</h2>
-          <p>Lengkapi informasi produk kue di bawah ini.</p>
+          <h2 id="productModalTitle">Tambah produk</h2>
+          <p>Isi detail produk dan pilih foto dari galeri.</p>
         </div>
-        <button class="icon-btn" id="closeModalButton" type="button" aria-label="Tutup">✕</button>
+        <button class="icon-btn" id="closeProductModal"
+          type="button" aria-label="Tutup">✕</button>
       </div>
-      <div class="modal-body">
-        <form id="productForm">
-          <div id="formMessage" class="notice error hidden" role="alert" style="margin-bottom:15px"></div>
-          <div class="form-grid">
-            <div class="field span-2">
-              <label for="productName">Nama produk *</label>
-              <input id="productName" name="name" required maxlength="150" placeholder="Contoh: Strawberry Shortcake">
-            </div>
-            <div class="field">
-              <label for="productPrice">Harga (Rp) *</label>
-              <input id="productPrice" name="price" type="number" min="0" step="1" required placeholder="45000">
-            </div>
-            <div class="field">
-              <label for="productStock">Stok *</label>
-              <input id="productStock" name="stock" type="number" min="0" max="1000000" step="1" required placeholder="10">
-            </div>
-            <div class="field">
-              <label for="productCategory">Kategori</label>
-              <input id="productCategory" name="category" maxlength="80" placeholder="Contoh: Cake">
-            </div>
-            <div class="field">
-              <label for="productImage">URL gambar</label>
-              <input id="productImage" name="image_url" type="url" placeholder="https://…">
-              <small>Gunakan URL gambar publik yang bisa diakses pelanggan.</small>
-            </div>
-            <div class="field span-2">
-              <label for="productDescription">Deskripsi</label>
-              <textarea id="productDescription" name="description" maxlength="2000" placeholder="Deskripsi singkat produk…"></textarea>
+
+      <form id="productForm" class="modal-body">
+        <div id="productFormMessage" class="notice error hidden"
+          style="margin-bottom:16px"></div>
+
+        <div class="form-grid">
+          <div class="field span-2">
+            <label for="productName">Nama produk *</label>
+            <input id="productName" name="name" required maxlength="120"
+              placeholder="Contoh: Strawberry Cake">
+          </div>
+
+          <div class="field span-2">
+            <label for="productDescription">Deskripsi</label>
+            <textarea id="productDescription" name="description"
+              maxlength="1000"
+              placeholder="Deskripsi singkat produk..."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="productPrice">Harga (Rupiah) *</label>
+            <input id="productPrice" name="price" type="number"
+              min="0" step="1" required placeholder="75000">
+          </div>
+
+          <div class="field">
+            <label for="productStock">Stok *</label>
+            <input id="productStock" name="stock" type="number"
+              min="0" step="1" required value="0">
+          </div>
+
+          <div class="field span-2">
+            <label for="productCategory">Kategori</label>
+            <input id="productCategory" name="category" maxlength="80"
+              placeholder="Contoh: Birthday Cake">
+          </div>
+
+          <div class="field span-2">
+            <label>Foto produk</label>
+
+            <div class="image-upload-box">
+              <img id="imagePreview" class="image-preview hidden"
+                alt="Pratinjau foto produk">
+
+              <div id="imagePreviewPlaceholder"
+                class="image-preview image-preview-placeholder">🎂</div>
+
+              <div class="upload-actions">
+                <label for="productImageFile" class="btn btn-secondary">
+                  📷 Pilih foto dari galeri
+                </label>
+                <button id="removeImageButton" type="button"
+                  class="btn btn-danger btn-small hidden">
+                  Hapus foto
+                </button>
+              </div>
+
+              <input id="productImageFile" type="file"
+                accept="image/jpeg,image/png,image/webp"
+                hidden>
+
+              <small>
+                Format JPG, PNG, atau WebP. Foto akan diperkecil sebelum
+                dikirim agar ukuran data lebih ringan.
+              </small>
+              <small id="imageStatus">Belum ada foto dipilih.</small>
             </div>
           </div>
-          <div class="modal-actions">
-            <button class="btn btn-secondary" id="cancelModalButton" type="button">Batal</button>
-            <button class="btn btn-primary" id="saveProductButton" type="submit">Simpan produk</button>
+
+          <div class="field span-2">
+            <label for="productActive">Status produk</label>
+            <select id="productActive" name="is_active">
+              <option value="1">Aktif — tampil di katalog</option>
+              <option value="0">Nonaktif — disembunyikan</option>
+            </select>
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelProductButton"
+            class="btn btn-secondary">Batal</button>
+          <button type="submit" id="saveProductButton"
+            class="btn btn-primary">Simpan produk</button>
+        </div>
+      </form>
     </section>
   </div>
 
-  <div id="confirmBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-    <section class="modal" style="max-width:440px">
-      <div class="modal-head">
-        <div><h2 id="confirmTitle">Konfirmasi tindakan</h2><p>Pastikan tindakan ini memang ingin dilakukan.</p></div>
-        <button class="icon-btn" id="closeConfirmButton" type="button" aria-label="Tutup">✕</button>
-      </div>
+  <!-- Modal konfirmasi hapus -->
+  <div id="confirmModalBackdrop" class="modal-backdrop hidden">
+    <section class="modal" role="dialog" aria-modal="true"
+      aria-labelledby="confirmTitle" style="max-width:430px">
       <div class="modal-body">
-        <p id="confirmCopy" class="confirm-copy"></p>
+        <div class="brand-mark">🗑️</div>
+        <h2 id="confirmTitle">Hapus produk?</h2>
+        <p id="confirmMessage" class="confirm-copy">
+          Produk ini akan dihapus.
+        </p>
         <div class="confirm-actions">
-          <button class="btn btn-secondary" id="cancelConfirmButton" type="button">Batal</button>
-          <button class="btn btn-danger" id="acceptConfirmButton" type="button">Ya, lanjutkan</button>
+          <button class="btn btn-secondary" id="cancelDeleteButton"
+            type="button">Batal</button>
+          <button class="btn btn-danger" id="confirmDeleteButton"
+            type="button">Ya, hapus</button>
         </div>
       </div>
     </section>
@@ -328,403 +1039,550 @@
 
   <div id="toastArea" class="toast-area" aria-live="polite"></div>
 
-  <script>
-    "use strict";
 
-    // Backend Cloudflare Worker milikmu
-    const API_BASE = "https://cake-order-backend.sabrinaayukartika.workers.dev";
-    const TOKEN_KEY = "cake_order_cashier_token";
-    const USER_KEY = "cake_order_cashier_username";
+<script>
+const API_BASE = "https://cake-order-backend.sabrinaayukartika.workers.dev";
 
-    let token = sessionStorage.getItem(TOKEN_KEY) || "";
-    let cashierUsername = sessionStorage.getItem(USER_KEY) || "Kasir";
-    let products = [];
-    let editingProductId = null;
-    let confirmAction = null;
+let authToken = sessionStorage.getItem("cake_cashier_token") || "";
+let products = [];
+let editingProductId = null;
+let selectedImageData = "";
+let selectedImageFile = null;
 
-    const $ = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[char]));
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function money(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(Number(value) || 0);
+}
+
+function showToast(message, type = "success") {
+  const area = $("toastArea");
+  if (!area) {
+    alert(message);
+    return;
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  area.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3500);
+}
+
+async function apiRequest(path, options = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {})
+  };
+
+  if (authToken) {
+    headers.Authorization = `Bearer ${authToken}`;
+  }
+
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers
+  });
+
+  const text = await response.text();
+  let data = {};
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = { message: text };
+  }
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      authToken = "";
+      sessionStorage.removeItem("cake_cashier_token");
     }
 
-    function rupiah(value) {
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency", currency: "IDR", maximumFractionDigits: 0
-      }).format(Number(value) || 0);
+    throw new Error(
+      data.error || data.message || `Permintaan gagal (${response.status})`
+    );
+  }
+
+  return data;
+}
+
+function showLogin() {
+  if ($("loginView")) $("loginView").hidden = false;
+  if ($("dashboardView")) $("dashboardView").hidden = true;
+}
+
+function showDashboard() {
+  if ($("loginView")) $("loginView").hidden = true;
+  if ($("dashboardView")) $("dashboardView").hidden = false;
+}
+
+async function login(event) {
+  event?.preventDefault();
+
+  const username = $("loginUsername")?.value.trim();
+  const password = $("loginPassword")?.value;
+
+  if (!username || !password) {
+    showToast("Masukkan username dan password.", "error");
+    return;
+  }
+
+  try {
+    const result = await apiRequest("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password })
+    });
+
+    const token = result.token || result.session?.token;
+
+    if (!token) {
+      throw new Error("Token login tidak ditemukan dari server.");
     }
 
-    function showToast(message, type = "success") {
-      const toast = document.createElement("div");
-      toast.className = `toast ${type}`;
-      toast.textContent = message;
-      $("toastArea").appendChild(toast);
-      window.setTimeout(() => toast.remove(), 4200);
-    }
+    authToken = token;
+    sessionStorage.setItem("cake_cashier_token", authToken);
 
-    function showInlineMessage(element, message) {
-      element.textContent = message;
-      element.classList.remove("hidden");
-    }
+    showDashboard();
+    await loadProducts();
+    showToast("Login berhasil.");
+  } catch (error) {
+    showToast(error.message || "Login gagal.", "error");
+  }
+}
 
-    function hideInlineMessage(element) {
-      element.textContent = "";
-      element.classList.add("hidden");
-    }
+async function logout() {
+  try {
+    await apiRequest("/api/auth/logout", {
+      method: "POST",
+      body: JSON.stringify({})
+    });
+  } catch {
+    // Tetap keluarkan kasir dari tampilan meskipun permintaan logout gagal.
+  }
 
-    async function api(path, options = {}) {
-      const headers = { ...(options.headers || {}) };
-      if (options.body !== undefined) headers["Content-Type"] = "application/json";
-      if (token) headers["Authorization"] = `Bearer ${token}`;
+  authToken = "";
+  products = [];
+  sessionStorage.removeItem("cake_cashier_token");
+  showLogin();
+}
 
-      let response;
-      try {
-        response = await fetch(`${API_BASE}${path}`, {
-          ...options,
-          headers,
-          body: options.body === undefined ? undefined : JSON.stringify(options.body)
-        });
-      } catch {
-        throw new Error("Tidak dapat terhubung ke server. Periksa koneksi internet dan URL Worker.");
-      }
+function productImage(product) {
+  return product.image_data || product.image_url || "";
+}
 
-      let data;
-      try { data = await response.json(); }
-      catch { data = {}; }
+/*
+ * Mengubah foto pilihan dari galeri menjadi Base64 JPEG.
+ * Foto diperkecil agar ukuran data tidak terlalu besar.
+ */
+async function imageFileToBase64(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    throw new Error("Pilih file gambar yang valid.");
+  }
 
-      if (!response.ok || data.success === false) {
-        if (response.status === 401 && path !== "/api/auth/login") {
-          signOutLocally();
-          showLogin("Sesi berakhir. Silakan login kembali.");
-        }
-        throw new Error(data.message || `Permintaan gagal (${response.status})`);
-      }
-      return data;
-    }
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error("Ukuran foto maksimal 10 MB.");
+  }
 
-    function showLogin(message = "") {
-      $("appScreen").classList.add("hidden");
-      $("loginScreen").classList.remove("hidden");
-      if (message) showInlineMessage($("loginMessage"), message);
-      else hideInlineMessage($("loginMessage"));
-    }
+  const imageURL = URL.createObjectURL(file);
 
-    function showApp() {
-      $("loginScreen").classList.add("hidden");
-      $("appScreen").classList.remove("hidden");
-      $("currentUsername").textContent = cashierUsername;
-    }
+  try {
+    const image = new Image();
 
-    function signOutLocally() {
-      token = "";
-      cashierUsername = "";
-      sessionStorage.removeItem(TOKEN_KEY);
-      sessionStorage.removeItem(USER_KEY);
-    }
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () => reject(new Error("Foto tidak bisa dibaca."));
+      image.src = imageURL;
+    });
 
-    async function loadProducts() {
-      $("catalogContent").classList.add("loading");
-      try {
-        const result = await api("/api/cashier/products");
-        products = Array.isArray(result.data) ? result.data : [];
-        renderProducts();
-      } catch (error) {
-        $("catalogContent").innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">⚠️</div>
-            <strong>Katalog belum bisa dimuat</strong>
-            <span>${escapeHtml(error.message)}</span>
-            <div style="margin-top:16px"><button class="btn btn-secondary btn-small" onclick="loadProducts()">Coba lagi</button></div>
-          </div>`;
-        $("resultCount").textContent = "Gagal memuat produk";
-      } finally {
-        $("catalogContent").classList.remove("loading");
-      }
-    }
+    const maxDimension = 900;
+    const scale = Math.min(
+      1,
+      maxDimension / Math.max(image.naturalWidth, image.naturalHeight)
+    );
 
-    function renderProducts() {
-      const active = products.filter(p => Number(p.is_active) === 1).length;
-      $("totalProducts").textContent = products.length;
-      $("activeProducts").textContent = active;
-      $("inactiveProducts").textContent = products.length - active;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
 
-      const categorySelect = $("categoryFilter");
-      const selectedCategory = categorySelect.value;
-      const categories = [...new Set(products.map(p => String(p.category || "").trim()).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, "id"));
-      categorySelect.innerHTML = '<option value="all">Semua kategori</option>' +
-        categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-      if (categories.includes(selectedCategory)) categorySelect.value = selectedCategory;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Browser tidak mendukung pemrosesan foto.");
 
-      const query = $("searchInput").value.trim().toLocaleLowerCase("id");
-      const status = $("statusFilter").value;
-      const category = categorySelect.value;
-      const filtered = products.filter(p => {
-        const isActive = Number(p.is_active) === 1;
-        const searchable = `${p.name || ""} ${p.category || ""} ${p.description || ""}`.toLocaleLowerCase("id");
-        return searchable.includes(query) &&
-          (status === "all" || (status === "active" ? isActive : !isActive)) &&
-          (category === "all" || String(p.category || "") === category);
-      });
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-      $("resultCount").textContent = `Menampilkan ${filtered.length} dari ${products.length} produk`;
-      if (!filtered.length) {
-        $("catalogContent").innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🧁</div>
-            <strong>${products.length ? "Produk tidak ditemukan" : "Belum ada produk"}</strong>
-            <span>${products.length ? "Coba ubah kata kunci atau filter." : "Tambahkan produk pertama untuk mulai mengisi katalog."}</span>
-          </div>`;
-        return;
-      }
+    const dataURL = canvas.toDataURL("image/jpeg", 0.75);
 
-      const rows = filtered.map(p => {
-        const isActive = Number(p.is_active) === 1;
-        const image = String(p.image_url || "");
-        const imageMarkup = image
-          ? `<img class="product-image" src="${escapeHtml(image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;product-image product-placeholder&quot;>🧁</div>'">`
-          : `<div class="product-image product-placeholder">🧁</div>`;
-        return `<tr>
-          <td><div class="product-cell">${imageMarkup}<div>
-            <div class="product-name">${escapeHtml(p.name)}</div>
-            <div class="product-description">${escapeHtml(p.description || "Tidak ada deskripsi")}</div>
-          </div></div></td>
-          <td><span class="category-chip">${escapeHtml(p.category || "Tanpa kategori")}</span></td>
-          <td><span class="price">${rupiah(p.price)}</span></td>
-          <td>${Number(p.stock) || 0}</td>
-          <td><span class="status-chip ${isActive ? "active" : "inactive"}">${isActive ? "● Aktif" : "○ Nonaktif"}</span></td>
-          <td><div class="row-actions">
-            <button class="icon-btn" type="button" title="Edit produk" aria-label="Edit ${escapeHtml(p.name)}" onclick="editProduct(${Number(p.id)})">✎</button>
-            <button class="icon-btn" type="button" title="${isActive ? "Nonaktifkan" : "Aktifkan"} produk" aria-label="${isActive ? "Nonaktifkan" : "Aktifkan"} ${escapeHtml(p.name)}" onclick="toggleProduct(${Number(p.id)}, ${isActive ? 0 : 1})">${isActive ? "◉" : "○"}</button>
-            <button class="icon-btn" type="button" title="Hapus produk" aria-label="Hapus ${escapeHtml(p.name)}" onclick="askDelete(${Number(p.id)})">⌫</button>
-          </div></td>
-        </tr>`;
-      }).join("");
-
-      $("catalogContent").innerHTML = `<div class="table-wrap"><table>
-        <thead><tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th style="text-align:right">Aksi</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>`;
-    }
-
-    function openProductModal(product = null) {
-      editingProductId = product ? Number(product.id) : null;
-      $("modalTitle").textContent = product ? "Edit produk" : "Tambah produk";
-      $("saveProductButton").textContent = product ? "Simpan perubahan" : "Simpan produk";
-      $("productForm").reset();
-      hideInlineMessage($("formMessage"));
-      if (product) {
-        $("productName").value = product.name || "";
-        $("productPrice").value = product.price ?? 0;
-        $("productStock").value = product.stock ?? 0;
-        $("productCategory").value = product.category || "";
-        $("productImage").value = product.image_url || "";
-        $("productDescription").value = product.description || "";
-      }
-      $("productModalBackdrop").classList.remove("hidden");
-      $("productName").focus();
-    }
-
-    function closeProductModal() {
-      $("productModalBackdrop").classList.add("hidden");
-      editingProductId = null;
-    }
-
-    window.editProduct = function(id) {
-      const product = products.find(p => Number(p.id) === Number(id));
-      if (product) openProductModal(product);
-    };
-
-    window.toggleProduct = async function(id, isActive) {
-      const product = products.find(p => Number(p.id) === Number(id));
-      if (!product) return;
-      const action = isActive ? "mengaktifkan" : "menonaktifkan";
-      openConfirm(
-        `${action.charAt(0).toUpperCase() + action.slice(1)} produk "${product.name}"?`,
-        async () => {
-          await api(`/api/cashier/products/${id}`, {
-            method: "PATCH",
-            body: { is_active: isActive }
-          });
-          showToast(isActive ? "Produk berhasil diaktifkan." : "Produk berhasil dinonaktifkan.");
-          await loadProducts();
-        },
-        isActive ? "Ya, aktifkan" : "Ya, nonaktifkan",
-        "btn-primary"
+    if (dataURL.length > 600000) {
+      throw new Error(
+        "Foto masih terlalu besar setelah diperkecil. Coba foto lain."
       );
-    };
-
-    window.askDelete = function(id) {
-      const product = products.find(p => Number(p.id) === Number(id));
-      if (!product) return;
-      openConfirm(
-        `Produk "${product.name}" akan dihapus permanen jika belum dipakai dalam riwayat pesanan. Jika produk sudah pernah dipesan, server akan menolak penghapusan. Lanjutkan?`,
-        async () => {
-          await api(`/api/cashier/products/${id}`, { method: "DELETE" });
-          showToast("Produk berhasil dihapus.");
-          await loadProducts();
-        },
-        "Hapus permanen",
-        "btn-danger"
-      );
-    };
-
-    function openConfirm(copy, action, label = "Ya, lanjutkan", buttonClass = "btn-danger") {
-      confirmAction = action;
-      $("confirmCopy").textContent = copy;
-      $("acceptConfirmButton").textContent = label;
-      $("acceptConfirmButton").className = `btn ${buttonClass}`;
-      $("confirmBackdrop").classList.remove("hidden");
     }
 
-    function closeConfirm() {
-      $("confirmBackdrop").classList.add("hidden");
-      confirmAction = null;
-    }
+    return dataURL;
+  } finally {
+    URL.revokeObjectURL(imageURL);
+  }
+}
 
-    $("loginForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      hideInlineMessage($("loginMessage"));
-      const button = $("loginButton");
-      button.disabled = true;
-      button.textContent = "Sedang masuk…";
-      try {
-        const result = await api("/api/auth/login", {
-          method: "POST",
-          body: {
-            username: $("username").value.trim(),
-            password: $("password").value
+function setImagePreview(dataURL) {
+  const preview = $("imagePreview");
+  const status = $("imageStatus");
+
+  if (preview) {
+    preview.src = dataURL || "";
+    preview.hidden = !dataURL;
+  }
+
+  if (status) {
+    status.textContent = dataURL
+      ? "Foto siap disimpan."
+      : "Belum ada foto dipilih.";
+  }
+}
+
+async function handleImageSelection(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  selectedImageFile = file;
+
+  if ($("imageStatus")) {
+    $("imageStatus").textContent = "Sedang memproses foto...";
+  }
+
+  try {
+    selectedImageData = await imageFileToBase64(file);
+    setImagePreview(selectedImageData);
+  } catch (error) {
+    selectedImageData = "";
+    setImagePreview("");
+    showToast(error.message || "Gagal memproses foto.", "error");
+  }
+}
+
+function clearSelectedImage() {
+  selectedImageData = "";
+  selectedImageFile = null;
+
+  if ($("productImageFile")) $("productImageFile").value = "";
+  setImagePreview("");
+}
+
+function openProductModal(product = null) {
+  editingProductId = product?.id ?? null;
+
+  if ($("productForm")) $("productForm").reset();
+  clearSelectedImage();
+
+  if ($("productModalTitle")) {
+    $("productModalTitle").textContent = product
+      ? "Edit Produk"
+      : "Tambah Produk";
+  }
+
+  if (product) {
+    if ($("productName")) $("productName").value = product.name || "";
+    if ($("productDescription")) {
+      $("productDescription").value = product.description || "";
+    }
+    if ($("productPrice")) $("productPrice").value = product.price ?? "";
+    if ($("productCategory")) {
+      $("productCategory").value = product.category || "";
+    }
+    if ($("productStock")) $("productStock").value = product.stock ?? 0;
+
+    selectedImageData = product.image_data || "";
+    setImagePreview(selectedImageData);
+  }
+
+  if ($("productModal")) $("productModal").hidden = false;
+}
+
+function closeProductModal() {
+  if ($("productModal")) $("productModal").hidden = true;
+  editingProductId = null;
+  clearSelectedImage();
+}
+
+async function loadProducts() {
+  try {
+    const result = await apiRequest("/api/cashier/products");
+    products = Array.isArray(result)
+      ? result
+      : (result.products || result.data || []);
+
+    renderProducts();
+    renderStats();
+  } catch (error) {
+    showToast(error.message || "Gagal mengambil daftar produk.", "error");
+  }
+}
+
+function renderProducts() {
+  const container = $("productsList");
+  if (!container) return;
+
+  const search = ($("productSearch")?.value || "").toLowerCase().trim();
+  const filter = $("productFilter")?.value || "all";
+
+  const filtered = products.filter((product) => {
+    const matchesSearch =
+      `${product.name || ""} ${product.category || ""}`
+        .toLowerCase()
+        .includes(search);
+
+    const active = Number(product.is_active) === 1 ||
+      product.is_active === true;
+
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "active" && active) ||
+      (filter === "inactive" && !active);
+
+    return matchesSearch && matchesFilter;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = "<p class='empty-state'>Belum ada produk yang cocok.</p>";
+    return;
+  }
+
+  container.innerHTML = filtered.map((product) => {
+    const active = Number(product.is_active) === 1 ||
+      product.is_active === true;
+    const image = productImage(product);
+
+    return `
+      <article class="product-card">
+        <div class="product-image-wrap">
+          ${
+            image
+              ? `<img class="product-image" src="${escapeHTML(image)}" alt="${escapeHTML(product.name)}">`
+              : `<div class="product-image-placeholder">🍰</div>`
           }
-        });
-        if (!result.token) throw new Error("Server tidak mengirim token login.");
-        token = result.token;
-        cashierUsername = result.cashier?.username || $("username").value.trim();
-        sessionStorage.setItem(TOKEN_KEY, token);
-        sessionStorage.setItem(USER_KEY, cashierUsername);
-        $("password").value = "";
-        showApp();
-        await loadProducts();
-        showToast("Login berhasil. Selamat bekerja!");
-      } catch (error) {
-        showInlineMessage($("loginMessage"), error.message);
-      } finally {
-        button.disabled = false;
-        button.innerHTML = 'Masuk ke dashboard <span aria-hidden="true">→</span>';
-      }
+        </div>
+        <div class="product-info">
+          <h3>${escapeHTML(product.name)}</h3>
+          <p>${escapeHTML(product.category || "Tanpa kategori")}</p>
+          <strong>${money(product.price)}</strong>
+          <p>Stok: ${Number(product.stock) || 0}</p>
+          <span class="status ${active ? "active" : "inactive"}">
+            ${active ? "Aktif" : "Nonaktif"}
+          </span>
+        </div>
+        <div class="product-actions">
+          <button type="button" data-edit="${escapeHTML(product.id)}">Edit</button>
+          <button type="button" data-toggle="${escapeHTML(product.id)}">
+            ${active ? "Nonaktifkan" : "Aktifkan"}
+          </button>
+          <button type="button" data-delete="${escapeHTML(product.id)}">Hapus</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  container.querySelectorAll("[data-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const product = products.find(
+        (item) => String(item.id) === button.dataset.edit
+      );
+      if (product) openProductModal(product);
+    });
+  });
+
+  container.querySelectorAll("[data-toggle]").forEach((button) => {
+    button.addEventListener("click", () => toggleProduct(button.dataset.toggle));
+  });
+
+  container.querySelectorAll("[data-delete]").forEach((button) => {
+    button.addEventListener("click", () => deleteProduct(button.dataset.delete));
+  });
+}
+
+function renderStats() {
+  const total = products.length;
+  const active = products.filter((product) =>
+    Number(product.is_active) === 1 || product.is_active === true
+  ).length;
+  const stock = products.reduce(
+    (sum, product) => sum + (Number(product.stock) || 0),
+    0
+  );
+
+  if ($("statTotalProducts")) $("statTotalProducts").textContent = total;
+  if ($("statActiveProducts")) $("statActiveProducts").textContent = active;
+  if ($("statTotalStock")) $("statTotalStock").textContent = stock;
+}
+
+
+async function saveProduct(event) {
+  event?.preventDefault();
+
+  const name = $("productName")?.value.trim();
+  const description = $("productDescription")?.value.trim() || "";
+  const price = Number($("productPrice")?.value);
+  const category = $("productCategory")?.value.trim() || "";
+  const stock = Number($("productStock")?.value);
+
+  if (!name) {
+    showToast("Nama produk wajib diisi.", "error");
+    return;
+  }
+
+  if (!Number.isFinite(price) || price < 0) {
+    showToast("Harga produk tidak valid.", "error");
+    return;
+  }
+
+  if (!Number.isInteger(stock) || stock < 0) {
+    showToast("Stok harus berupa bilangan bulat nol atau lebih.", "error");
+    return;
+  }
+
+  const payload = {
+    name,
+    description,
+    price,
+    category,
+    stock,
+    image_data: selectedImageData || null
+  };
+
+  const submitButton = $("saveProductButton");
+  if (submitButton) submitButton.disabled = true;
+
+  try {
+    const isEditing = editingProductId !== null;
+    const path = isEditing
+      ? `/api/cashier/products/${encodeURIComponent(editingProductId)}`
+      : "/api/cashier/products";
+
+    await apiRequest(path, {
+      method: isEditing ? "PUT" : "POST",
+      body: JSON.stringify(payload)
     });
 
-    $("logoutButton").addEventListener("click", async () => {
-      try {
-        if (token) await api("/api/auth/logout", { method: "POST" });
-      } catch (error) {
-        console.warn("Logout server:", error.message);
-      } finally {
-        signOutLocally();
-        products = [];
-        showLogin("Kamu sudah logout.");
+    closeProductModal();
+    await loadProducts();
+    showToast(isEditing ? "Produk berhasil diperbarui." : "Produk berhasil ditambahkan.");
+  } catch (error) {
+    showToast(
+      error.message || "Gagal menyimpan produk. Periksa koneksi dan backend.",
+      "error"
+    );
+  } finally {
+    if (submitButton) submitButton.disabled = false;
+  }
+}
+
+async function toggleProduct(id) {
+  const product = products.find((item) => String(item.id) === String(id));
+  if (!product) return;
+
+  const active = Number(product.is_active) === 1 ||
+    product.is_active === true;
+
+  try {
+    await apiRequest(
+      `/api/cashier/products/${encodeURIComponent(id)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ is_active: active ? 0 : 1 })
       }
-    });
+    );
 
-    $("addProductButton").addEventListener("click", () => openProductModal());
-    $("closeModalButton").addEventListener("click", closeProductModal);
-    $("cancelModalButton").addEventListener("click", closeProductModal);
-    $("productModalBackdrop").addEventListener("click", (event) => {
-      if (event.target === $("productModalBackdrop")) closeProductModal();
-    });
+    await loadProducts();
+    showToast(active ? "Produk dinonaktifkan." : "Produk diaktifkan.");
+  } catch (error) {
+    showToast(error.message || "Gagal mengubah status produk.", "error");
+  }
+}
 
-    $("productForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      hideInlineMessage($("formMessage"));
+async function deleteProduct(id) {
+  const product = products.find((item) => String(item.id) === String(id));
+  if (!product) return;
 
-      const price = Number($("productPrice").value);
-      const stock = Number($("productStock").value);
-      if (!Number.isSafeInteger(price) || price < 0 || !Number.isSafeInteger(stock) || stock < 0) {
-        showInlineMessage($("formMessage"), "Harga dan stok harus berupa bilangan bulat nol atau lebih.");
-        return;
-      }
+  const confirmed = confirm(
+    `Yakin ingin menghapus produk "${product.name}"?`
+  );
 
-      const imageUrl = $("productImage").value.trim();
-      if (imageUrl && !/^https?:\/\//i.test(imageUrl)) {
-        showInlineMessage($("formMessage"), "URL gambar harus dimulai dengan http:// atau https://.");
-        return;
-      }
+  if (!confirmed) return;
 
-      const body = {
-        name: $("productName").value.trim(),
-        price,
-        stock,
-        category: $("productCategory").value.trim(),
-        image_url: imageUrl,
-        description: $("productDescription").value.trim()
-      };
-      if (!body.name) {
-        showInlineMessage($("formMessage"), "Nama produk wajib diisi.");
-        return;
-      }
+  try {
+    await apiRequest(
+      `/api/cashier/products/${encodeURIComponent(id)}`,
+      { method: "DELETE" }
+    );
 
-      const button = $("saveProductButton");
-      button.disabled = true;
-      button.textContent = "Menyimpan…";
-      try {
-        if (editingProductId !== null) {
-          await api(`/api/cashier/products/${editingProductId}`, { method: "PUT", body });
-          showToast("Perubahan produk berhasil disimpan.");
-        } else {
-          await api("/api/cashier/products", { method: "POST", body });
-          showToast("Produk baru berhasil ditambahkan.");
-        }
-        closeProductModal();
-        await loadProducts();
-      } catch (error) {
-        showInlineMessage($("formMessage"), error.message);
-      } finally {
-        button.disabled = false;
-        button.textContent = editingProductId !== null ? "Simpan perubahan" : "Simpan produk";
-      }
-    });
+    await loadProducts();
+    showToast("Produk berhasil dihapus.");
+  } catch (error) {
+    showToast(
+      error.message || "Produk gagal dihapus. Mungkin sudah digunakan dalam pesanan.",
+      "error"
+    );
+  }
+}
 
-    $("acceptConfirmButton").addEventListener("click", async () => {
-      if (!confirmAction) return;
-      const action = confirmAction;
-      $("acceptConfirmButton").disabled = true;
-      $("acceptConfirmButton").textContent = "Memproses…";
-      try {
-        await action();
-        closeConfirm();
-      } catch (error) {
-        showToast(error.message, "error");
-      } finally {
-        $("acceptConfirmButton").disabled = false;
-        $("acceptConfirmButton").textContent = "Ya, lanjutkan";
-      }
-    });
+function setupEventListeners() {
+  $("loginForm")?.addEventListener("submit", login);
+  $("logoutButton")?.addEventListener("click", logout);
 
-    $("cancelConfirmButton").addEventListener("click", closeConfirm);
-    $("closeConfirmButton").addEventListener("click", closeConfirm);
-    $("confirmBackdrop").addEventListener("click", (event) => {
-      if (event.target === $("confirmBackdrop")) closeConfirm();
-    });
-    $("refreshButton").addEventListener("click", loadProducts);
-    $("searchInput").addEventListener("input", renderProducts);
-    $("statusFilter").addEventListener("change", renderProducts);
-    $("categoryFilter").addEventListener("change", renderProducts);
+  $("addProductButton")?.addEventListener("click", () => openProductModal());
+  $("closeProductModal")?.addEventListener("click", closeProductModal);
+  $("cancelProductButton")?.addEventListener("click", closeProductModal);
+  $("productForm")?.addEventListener("submit", saveProduct);
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        closeProductModal();
-        closeConfirm();
-      }
-    });
+  $("productImageFile")?.addEventListener("change", handleImageSelection);
 
-    // Token hanya disimpan selama sesi tab browser, bukan di penyimpanan permanen.
-    if (token) {
-      showApp();
-      loadProducts();
-    } else {
-      showLogin();
-    }
-  </script>
+  $("chooseImageButton")?.addEventListener("click", () => {
+    $("productImageFile")?.click();
+  });
+
+  $("removeImageButton")?.addEventListener("click", clearSelectedImage);
+
+  $("productSearch")?.addEventListener("input", renderProducts);
+  $("productFilter")?.addEventListener("change", renderProducts);
+
+  $("refreshProductsButton")?.addEventListener("click", loadProducts);
+
+  $("productModal")?.addEventListener("click", (event) => {
+    if (event.target === $("productModal")) closeProductModal();
+  });
+}
+
+async function initializeApp() {
+  setupEventListeners();
+
+  if (!authToken) {
+    showLogin();
+    return;
+  }
+
+  try {
+    await loadProducts();
+    showDashboard();
+  } catch {
+    showLogin();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initializeApp);
+</script>
 </body>
 </html>
