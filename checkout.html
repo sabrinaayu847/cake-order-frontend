@@ -424,6 +424,25 @@ footer {
     padding: 13px;
   }
 }
+
+  
+.payment-card {
+  text-align: center;
+}
+
+.payment-qr {
+  display: block;
+  width: min(100%, 280px);
+  height: auto;
+  margin: 18px auto;
+  padding: 8px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  object-fit: contain;
+  }
+
+  
 </style>
 </head>
 
@@ -524,6 +543,24 @@ footer {
           sudah membayar; tombol ini bukan bukti transfer dan tidak
           otomatis mengonfirmasi pembayaran.
         </div>
+        <!-- QRIS PEMBAYARAN -->
+<div class="card payment-card">
+  <h2>Scan QRIS untuk Membayar</h2>
+
+  <p class="small">
+    Scan kode QR di bawah menggunakan aplikasi pembayaran kamu.
+  </p>
+
+  <img
+    src="./qris.jpg"
+    alt="QRIS pembayaran Cake Order"
+    class="payment-qr"
+  >
+
+  <p class="small">
+    Pastikan nama penerima dan nominal pembayaran sudah benar.
+  </p>
+</div>
 
         <button id="reportPaymentBtn" class="primary">
           Saya Sudah Membayar
