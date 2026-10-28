@@ -1688,9 +1688,26 @@ async function loadProducts() {
 
 /* INISIALISASI */
 
-updateCartCount();
-renderCart();
+
+/* SINKRONISASI SAAT HALAMAN DIBUKA KEMBALI */
+
+function refreshCart() {
+  cart = readCart();
+  updateCartCount();
+  renderCart();
+}
+
+window.addEventListener("pageshow", refreshCart);
+
+window.addEventListener("storage", event => {
+  if (event.key === CART_KEY) {
+    refreshCart();
+  }
+});
+
+refreshCart();
 loadProducts();
+
   
   </script>
 </body>
