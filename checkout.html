@@ -899,14 +899,33 @@ footer {
       }
     });
 
-    async function refreshOrderAfterCreate() {
-      const result = await apiRequest(
-        `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
-        { token: currentOrder.access_token }
-      );
+    
+async function refreshOrderAfterCreate() {
+  if (!currentOrder?.order_code || !currentOrder?.access_token) {
+    showMessage(
+      "Kode pesanan atau token akses tidak tersedia. Coba buat pesanan kembali.",
+      "error"
+    );
+    return;
+  }
 
-      renderOrder(result.data);
-    }
+  console.log(
+    "Kode pesanan tersedia:",
+    Boolean(currentOrder.order_code)
+  );
+
+  console.log(
+    "Token akses tersedia:",
+    Boolean(currentOrder.access_token)
+  );
+
+  const result = await apiRequest(
+    `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+    { token: currentOrder.access_token }
+  );
+
+  renderOrder(result.data);
+}     
 
     $("reportPaymentBtn").addEventListener("click", async () => {
       if (!currentOrder || busy) return;
