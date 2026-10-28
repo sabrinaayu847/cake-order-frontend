@@ -444,20 +444,50 @@
       return "";
     }
 
-    function getCart() {
-      try {
-        const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-        return Array.isArray(cart) ? cart : [];
-      } catch {
-        return [];
-      }
-    }
+    
+function getCart() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(CART_KEY) || "[]"
+    );
 
-    function saveCart(cart) {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      updateCartCount();
-      window.dispatchEvent(new Event("cakeOrderCartUpdated"));
-    }
+    if (!Array.isArray(saved)) return [];
+
+    return saved.map(item => ({
+      ...item,
+      quantity: Math.max(
+        1,
+        Number(item.quantity ?? item.qty ?? 1)
+      ),
+      price: Number(item.price) || 0,
+      stock: Number(item.stock) || 0
+    }));
+  } catch {
+    return [];
+  }
+}
+
+
+    
+function saveCart(cart) {
+  const normalizedCart = cart.map(item => ({
+    ...item,
+    quantity: Number(item.quantity ?? item.qty ?? 1),
+    price: Number(item.price) || 0
+  }));
+
+  localStorage.setItem(
+    CART_KEY,
+    JSON.stringify(normalizedCart)
+  );
+
+  updateCartCount();
+
+  window.dispatchEvent(
+    new CustomEvent("cakeOrderCartUpdated")
+  );
+}
+
 
     function updateCartCount() {
       const count = getCart().reduce((total, item) => {
