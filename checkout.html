@@ -824,24 +824,30 @@ footer {
     }
 
     async function refreshOrder() {
-      if (!currentOrder || busy) return;
+  if (!currentOrder || busy) return;
 
-      hideMessage();
-      setBusy(true);
+  console.log("Kode pesanan tersedia:",
+    Boolean(currentOrder.order_code));
 
-      try {
-        const result = await apiRequest(
-          `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
-          { token: currentOrder.access_token }
-        );
+  console.log("Token tersedia:",
+    Boolean(currentOrder.access_token));
 
-        renderOrder(result.data);
-      } catch (error) {
-        showMessage(error.message, "error");
-      } finally {
-        setBusy(false);
-      }
-    }
+  hideMessage();
+  setBusy(true);
+
+  try {
+    const result = await apiRequest(
+      `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+      { token: currentOrder.access_token }
+    );
+
+    renderOrder(result.data);
+  } catch (error) {
+    showMessage(error.message, "error");
+  } finally {
+    setBusy(false);
+  }
+                           }
 
     $("checkoutForm").addEventListener("submit", async event => {
       event.preventDefault();
