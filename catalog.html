@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katalog Kue | Cake Order</title>
+   <style>
+  :root {
+    --bg: #F3E0D2;
+    --surface: #fffaf7;
+    --surface-soft: #F5D8A0;
+    --ink: #4b2029;
+    --muted: #86656a;
+    --line: #e9c8c8;
+    --brand: #A0233D;
+    --brand-dark: #7d1b30;
+    --brand-soft: #DD9BA7;
+    --green: #26734d;
+    --green-soft: #e4f5eb;
+    --red: #A0233D;
+    --red-soft: #f9e7e9;
+    --shadow: 0 18px 50px rgba(94, 29, 48, .10);
+    --radius: 18px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  button, input, select {
+    font: inherit;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 17px clamp(18px, 4vw, 54px);
+    background: rgba(221, 155, 167, .94);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 850;
+    letter-spacing: -.025em;
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    background: var(--brand);
+    color: white;
+    border-radius: 13px;
+    font-size: 1.3rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 11px 15px;
+    font-weight: 750;
+    transition: .16s ease;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--brand);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--brand-dark);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface-soft);
+  }
+
+  main {
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: 35px clamp(18px, 4vw, 42px) 60px;
+  }
+
+  .page-heading {
+    margin-bottom: 27px;
+  }
+
+  .eyebrow {
+    color: var(--brand);
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  .page-heading h1 {
+    margin: 7px 0 8px;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    letter-spacing: -.05em;
+  }
+
+  .page-heading p {
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .catalog-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-head {
+    padding: 21px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel-head h2 {
+    margin: 0 0 5px;
+    font-size: 1.12rem;
+    letter-spacing: -.02em;
+  }
+
+  .panel-head p {
+    color: var(--muted);
+    margin: 0;
+    font-size: .87rem;
+  }
+
+  .filters {
+    padding: 15px 22px;
+    display: flex;
+    gap: 11px;
+    border-bottom: 1px solid var(--line);
+    background: #fff8f5;
+  }
+
+  .search-wrap {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .search,
+  .filter-select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 13px;
+    color: var(--ink);
+    background: white;
+    outline: none;
+  }
+
+  .search:focus,
+  .filter-select:focus {
+    border-color: var(--brand-soft);
+    box-shadow: 0 0 0 3px rgba(160, 35, 61, .10);
+  }
+
+  .filter-select {
+    width: auto;
+    min-width: 170px;
+  }
+
+  #productList {
+    padding: 22px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .product-card {
+    min-width: 0;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(94, 29, 48, .10);
+  }
+
+  .product-card img,
+  .no-image {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-soft);
+    color: var(--muted);
+  }
+
+  .product-info {
+    padding: 16px;
+  }
+
+  .product-info h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .description {
+    color: var(--muted);
+    font-size: .85rem;
+    line-height: 1.5;
+    min-height: 40px;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .price {
+    color: var(--brand);
+    font-size: 1.1rem;
+    font-weight: 850;
+    margin: 0 0 9px;
+    overflow-wrap: anywhere;
+  }
+
+  .stock {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: .78rem;
+    font-weight: 750;
+    margin: 0;
+  }
+
+  .stock:where(.out-of-stock) {
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+  }
+
+  footer {
+    padding: 25px 18px;
+    text-align: center;
+    color: var(--muted);
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 1000px) {
+    #productList {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .topbar {
+      padding: 13px 16px;
+    }
+
+    main {
+      padding-top: 25px;
+    }
+
+    .filters {
+      flex-direction: column;
+      padding: 14px;
+    }
+
+    .filter-select {
+      width: 100%;
+    }
+
+    #productList {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .product-card img,
+    .no-image {
+      height: 150px;
+    }
+
+    .product-info {
+      padding: 12px;
+    }
+
+    .product-info h3 {
+      font-size: .95rem;
+    }
+
+    .price {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    #productList {
+      grid-template-columns: 1fr;
+    }
+
+    .product-card img,
+    .no-image {
+      height: 200px;
+    }
+  }
+   </style>
+</head>
+<body>
+  <header>
+    <h1>🍰 Cake Order</h1>
+    <a href="./index.html">Halaman Utama</a>
+  </header>
+
+  <section class="hero">
+    <h2>Katalog Kue Kami</h2>
+    <p>Temukan kue favoritmu untuk setiap momen spesial.</p>
+  </section>
+
+  <main class="catalog">
+    <div class="toolbar">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Cari nama kue..."
+        aria-label="Cari produk"
+      >
+      <select id="categoryFilter" aria-label="Filter kategori">
+        <option value="">Semua kategori</option>
+      </select>
+    </div>
+
+    <section id="productList" aria-live="polite">
+      <p class="empty">Memuat katalog kue...</p>
+    </section>
+  </main>
+
+  <footer>
+    © Cake Order — Dibuat dengan ❤️
+  </footer>
+
+  <script>
+    const API_URL =
+      "https://cake-order-backend.sabrinaayukartika.workers.dev";
+
+    const productList = document.getElementById("productList");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    let products = [];
+
+    function rupiah(value) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    function safeImageUrl(value) {
+      if (typeof value !== "string" || !value.trim()) return "";
+
+      const image = value.trim();
+
+      if (
+        /^https:\/\/[^\s"'<>]+$/i.test(image) ||
+        /^data:image\/(png|jpeg|jpg|webp|gif);base64,[a-z0-9+/=\s]+$/i.test(image)
+      ) {
+        return image;
+      }
+
+      return "";
+    }
+
+    function renderProducts() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+
+      const filtered = products.filter(product => {
+        const matchesName = (product.name || "")
+          .toLowerCase()
+          .includes(keyword);
+
+        const matchesCategory =
+          !category || (product.category || "") === category;
+
+        return matchesName && matchesCategory;
+      });
+
+      if (!filtered.length) {
+        productList.innerHTML =
+          '<p class="empty">Produk tidak ditemukan.</p>';
+        return;
+      }
+
+      productList.replaceChildren();
+
+      filtered.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "product-card";
+
+        const image = safeImageUrl(
+          product.image_data || product.image_url || ""
+        );
+
+        if (image) {
+          const img = document.createElement("img");
+          img.src = image;
+          img.alt = product.name || "Foto kue";
+          img.loading = "lazy";
+          img.onerror = () => {
+            const placeholder = document.createElement("div");
+            placeholder.className = "no-image";
+            placeholder.textContent = "Foto tidak tersedia";
+            img.replaceWith(placeholder);
+          };
+          card.appendChild(img);
+        } else {
+          const placeholder = document.createElement("div");
+          placeholder.className = "no-image";
+          placeholder.textContent = "Foto belum tersedia";
+          card.appendChild(placeholder);
+        }
+
+        const info = document.createElement("div");
+        info.className = "product-info";
+
+        const name = document.createElement("h3");
+        name.textContent = product.name || "Kue";
+
+        const description = document.createElement("p");
+        description.className = "description";
+        description.textContent =
+          product.description || "Kue pilihan untuk momen spesial.";
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = rupiah(Number(product.price) || 0);
+
+        const stock = document.createElement("p");
+        stock.className = "stock";
+        stock.textContent =
+          Number(product.stock) > 0
+            ? "Stok tersedia: " + product.stock
+            : "Stok habis";
+
+        info.append(name, description, price, stock);
+        card.appendChild(info);
+        productList.appendChild(card);
+      });
+    }
+
+    async function loadProducts() {
+      try {
+        const response = await fetch(API_URL + "/api/products");
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data katalog.");
+        }
+
+        const result = await response.json();
+
+        products = Array.isArray(result)
+          ? result
+          : result.products || result.data || [];
+
+        const categories = [
+          ...new Set(
+            products
+              .map(product => product.category)
+              .filter(Boolean)
+          )
+        ];
+
+        categories.sort().forEach(category => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categoryFilter.appendChild(option);
+        });
+
+        renderProducts();
+      } catch (error) {
+        productList.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "empty";
+        message.textContent =
+          "Katalog belum dapat dimuat. Silakan coba lagi nanti.";
+
+        productList.appendChild(message);
+        console.error(error);
+      }
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    categoryFilter.addEventListener("change", renderProducts);
+
+    loadProducts();
+  </script>
+</body>
+</html>
