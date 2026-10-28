@@ -828,6 +828,8 @@
 const API_URL =
   "https://cake-order-backend.sabrinaayukartika.workers.dev";
 
+const CART_KEY = "cakeOrderCart";
+
 const productContainer =
   document.getElementById("featuredProducts");
 
@@ -858,31 +860,58 @@ function rupiah(value) {
 
 /* SIMPAN KERANJANG */
 
+
 function readCart() {
   try {
     const saved = JSON.parse(
-      localStorage.getItem("cakeOrderCart") || "[]"
+      localStorage.getItem(CART_KEY) || "[]"
     );
 
-    return Array.isArray(saved) ? saved : [];
-  } catch {
+    if (!Array.isArray(saved)) return [];
+
+    return saved.map(item => ({
+      ...item,
+      quantity: Math.max(
+        0,
+        Number(item.quantity ?? item.qty ?? 0)
+      ),
+      price: Number(item.price) || 0
+    })).filter(item => item.quantity > 0);
+  } catch (error) {
+    console.error("Gagal membaca keranjang:", error);
     return [];
   }
 }
 
 function saveCart() {
-  localStorage.setItem(
-    "cakeOrderCart",
-    JSON.stringify(cart)
-  );
+  // Samakan format data sebelum disimpan
+  cart = cart.map(item => ({
+    ...item,
+    quantity: Math.max(
+      0,
+      Number(item.quantity ?? item.qty ?? 0)
+    ),
+    price: Number(item.price) || 0
+  })).filter(item => item.quantity > 0);
+
+  // Hapus format lama agar tidak membingungkan
+  cart = cart.map(({ qty, ...item }) => item);
+
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
   updateCartCount();
   renderCart();
+
+  window.dispatchEvent(
+    new Event("cakeOrderCartUpdated")
+  );
 }
 
 function updateCartCount() {
-  const quantity = cart.reduce(
-    (sum, item) => sum + Number(item.qty || 0),
+  const latestCart = readCart();
+
+  const quantity = latestCart.reduce(
+    (sum, item) => sum + item.quantity,
     0
   );
 
@@ -1004,7 +1033,11 @@ function renderProducts() {
 
 /* TAMBAHKAN PRODUK KE KERANJANG */
 
+
 function addToCart(id) {
+  // Baca data keranjang terbaru
+  cart = readCart();
+
   const product = products.find(
     item => String(item.id) === String(id)
   );
@@ -1017,6 +1050,7 @@ function addToCart(id) {
     alert("Maaf, stok produk ini sedang habis.");
     return;
   }
+
 
   const existing = cart.find(
     item => String(item.id) === String(id)
@@ -1691,6 +1725,7 @@ async function loadProducts() {
 
 /* SINKRONISASI SAAT HALAMAN DIBUKA KEMBALI */
 
+
 function refreshCart() {
   cart = readCart();
   updateCartCount();
@@ -1700,10 +1735,16 @@ function refreshCart() {
 window.addEventListener("pageshow", refreshCart);
 
 window.addEventListener("storage", event => {
-  if (event.key === CART_KEY) {
+  if (event.key === CART_KEY || event.key === null) {
     refreshCart();
   }
 });
+
+window.addEventListener("cakeOrderCartUpdated", refreshCart);
+
+refreshCart();
+loadProducts();
+
 
 refreshCart();
 loadProducts();
