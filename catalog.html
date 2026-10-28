@@ -352,37 +352,63 @@
    </style>
 </head>
 <body>
-  <header>
-    <h1>🍰 Cake Order</h1>
-    <a href="./index.html">Halaman Utama</a>
-  </header>
-
-  <section class="hero">
-    <h2>Katalog Kue Kami</h2>
-    <p>Temukan kue favoritmu untuk setiap momen spesial.</p>
-  </section>
-
-  <main class="catalog">
-    <div class="toolbar">
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="Cari nama kue..."
-        aria-label="Cari produk"
-      >
-      <select id="categoryFilter" aria-label="Filter kategori">
-        <option value="">Semua kategori</option>
-      </select>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🍰</div>
+      <span>Cake Order</span>
     </div>
 
-    <section id="productList" aria-live="polite">
-      <p class="empty">Memuat katalog kue...</p>
+    <a href="./index.html" class="btn btn-secondary">
+      ← Halaman Utama
+    </a>
+  </header>
+
+  <main>
+    <section class="page-heading">
+      <div class="eyebrow">MANIS DI SETIAP MOMEN</div>
+      <h1>Katalog Kue Kami 🍰</h1>
+      <p>
+        Temukan kue favoritmu untuk menemani setiap momen spesial.
+      </p>
+    </section>
+
+    <section class="catalog-panel">
+      <div class="panel-head">
+        <h2>Temukan Kue Favoritmu</h2>
+        <p>Lihat koleksi kue yang tersedia untukmu.</p>
+      </div>
+
+      <div class="filters">
+        <div class="search-wrap">
+          <input
+            type="search"
+            id="searchInput"
+            class="search"
+            placeholder="⌕  Cari nama kue..."
+            aria-label="Cari produk"
+          >
+        </div>
+
+        <select
+          id="categoryFilter"
+          class="filter-select"
+          aria-label="Filter kategori"
+        >
+          <option value="">Semua kategori</option>
+        </select>
+      </div>
+
+      <section id="productList" aria-live="polite">
+        <p class="empty">🍰 Memuat katalog kue...</p>
+      </section>
     </section>
   </main>
 
   <footer>
-    © Cake Order — Dibuat dengan ❤️
+    <strong>Cake Order 🍰</strong>
+    <p>Dibuat dengan ❤️ untuk momen manismu.</p>
   </footer>
+
 
   <script>
     const API_URL =
@@ -483,11 +509,15 @@
         price.textContent = rupiah(Number(product.price) || 0);
 
         const stock = document.createElement("p");
-        stock.className = "stock";
-        stock.textContent =
-          Number(product.stock) > 0
-            ? "Stok tersedia: " + product.stock
-            : "Stok habis";
+const hasStock = Number(product.stock) > 0;
+
+stock.className = hasStock
+  ? "stock"
+  : "stock out-of-stock";
+
+stock.textContent = hasStock
+  ? "Stok tersedia: " + product.stock
+  : "Stok habis";
 
         info.append(name, description, price, stock);
         card.appendChild(info);
