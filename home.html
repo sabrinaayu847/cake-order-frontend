@@ -1211,13 +1211,451 @@ cartOverlay.addEventListener("click", event => {
   }
 });
 
+
+const API_URL =
+  "https://cake-order-backend.sabrinaayukartika.workers.dev";
+
+const CART_KEY = "cakeOrderCart";
+
+const productContainer =
+  document.getElementById("featuredProducts");
+
+const cartCount =
+  document.getElementById("cartCount");
+
+const cartOverlay =
+  document.getElementById("cartOverlay");
+
+const cartItemsContainer =
+  document.getElementById("cartItems");
+
+const cartTotalContainer =
+  document.getElementById("cartTotal");
+
+let products = [];
+let cart = readCart();
+
+/* FORMAT HARGA */
+
+function rupiah(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(Number(value) || 0);
+}
+
+/* BACA KERANJANG */
+
+function readCart() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(CART_KEY) || "[]"
+    );
+
+    if (!Array.isArray(saved)) return [];
+
+    return saved.map(item => ({
+      ...item,
+      quantity: Math.max(
+        1,
+        Number(item.quantity ?? item.qty ?? 1)
+      ),
+      price: Number(item.price) || 0,
+      stock: Number(item.stock) || 0
+    }));
+  } catch (error) {
+    console.error("Gagal membaca keranjang:", error);
+    return [];
+  }
+}
+
+/* SIMPAN KERANJANG */
+
+function saveCart() {
+  try {
+    localStorage.setItem(
+      CART_KEY,
+      JSON.stringify(cart)
+    );
+
+    updateCartCount();
+    renderCart();
+
+    // Beri tahu halaman lain di tab yang sama.
+    window.dispatchEvent(
+      new CustomEvent("cakeOrderCartUpdated")
+    );
+  } catch (error) {
+    console.error("Gagal menyimpan keranjang:", error);
+    alert("Keranjang gagal disimpan di browser.");
+  }
+}
+
+/* JUMLAH ITEM DI IKON KERANJANG */
+
+function updateCartCount() {
+  const quantity = cart.reduce(
+    (sum, item) =>
+      sum + Number(item.quantity || 0),
+    0
+  );
+
+  cartCount.textContent = quantity;
+}
+
+/* VALIDASI GAMBAR */
+
+function getImage(product) {
+  const value =
+    product.image_data || product.image_url || "";
+
+  if (typeof value !== "string") return "";
+
+  if (
+    /^https:\/\/[^\s"'<>]+$/i.test(value) ||
+    /^data:image\/(png|jpeg|jpg|webp|gif);base64,/i.test(value)
+  ) {
+    return value;
+  }
+
+  return "";
+}
+
+/* TAMPILKAN PRODUK UNGGULAN */
+
+function renderProducts() {
+  const featured = products
+    .filter(product =>
+      product.is_active !== false &&
+      product.is_active !== 0
+    )
+    .slice(0, 4);
+
+  productContainer.replaceChildren();
+
+  if (!featured.length) {
+    productContainer.innerHTML =
+      '<p class="loading">Produk belum tersedia. Silakan cek katalog.</p>';
+    return;
+  }
+
+  featured.forEach(product => {
+    const card = document.createElement("article");
+    card.className = "product-card";
+
+    const imageUrl = getImage(product);
+
+    if (imageUrl) {
+      const image = document.createElement("img");
+      image.className = "product-image";
+      image.src = imageUrl;
+      image.alt = product.name || "Foto kue";
+      image.loading = "lazy";
+
+      image.onerror = () => {
+        const placeholder = document.createElement("div");
+        placeholder.className =
+          "product-image image-placeholder";
+        placeholder.textContent = "🍰";
+        image.replaceWith(placeholder);
+      };
+
+      card.appendChild(image);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className =
+        "product-image image-placeholder";
+      placeholder.textContent = "🍰";
+      card.appendChild(placeholder);
+    }
+
+    const info = document.createElement("div");
+    info.className = "product-info";
+
+    const name = document.createElement("h3");
+    name.textContent = product.name || "Kue pilihan";
+
+    const category = document.createElement("span");
+    category.className = "category";
+    category.textContent =
+      product.category || "Kue spesial";
+
+    const price = document.createElement("p");
+    price.className = "price";
+    price.textContent = rupiah(product.price);
+
+    const stockAmount = Number(product.stock) || 0;
+    const available = stockAmount > 0;
+
+    const stock = document.createElement("p");
+    stock.className = available ? "stock" : "stock out";
+    stock.textContent = available
+      ? "● Stok tersedia: " + stockAmount
+      : "Stok habis";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn btn-primary";
+    button.textContent = available
+      ? "🛒 Tambah ke Keranjang"
+      : "Stok Habis";
+    button.disabled = !available;
+    button.style.opacity = available ? "1" : ".6";
+
+    button.addEventListener("click", () => {
+      addToCart(product.id);
+    });
+
+    info.append(name, category, price, stock, button);
+    card.appendChild(info);
+    productContainer.appendChild(card);
+  });
+}
+
+/* TAMBAHKAN PRODUK KE KERANJANG */
+
+function addToCart(id) {
+  const product = products.find(
+    item => String(item.id) === String(id)
+  );
+
+  if (!product) {
+    alert("Produk tidak ditemukan.");
+    return;
+  }
+
+  const stock = Number(product.stock) || 0;
+
+  if (stock <= 0) {
+    alert("Maaf, stok produk ini sedang habis.");
+    return;
+  }
+
+  const existing = cart.find(
+    item => String(item.id) === String(id)
+  );
+
+  if (existing) {
+    if (existing.quantity >= stock) {
+      alert("Jumlah sudah mencapai stok yang tersedia.");
+      return;
+    }
+
+    existing.quantity++;
+    existing.stock = stock;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name || "Kue",
+      price: Number(product.price) || 0,
+      stock: stock,
+      image: getImage(product),
+      quantity: 1
+    });
+  }
+
+  saveCart();
+}
+
+/* TAMPILKAN KERANJANG */
+
+function renderCart() {
+  cartItemsContainer.replaceChildren();
+
+  if (!cart.length) {
+    cartItemsContainer.innerHTML = `
+      <div class="cart-empty">
+        <div style="font-size:45px">🛍️</div>
+        <h3>Keranjang masih kosong</h3>
+        <p>Yuk, pilih kue favoritmu!</p>
+        <a class="btn btn-primary" href="./katalog.html">
+          Lihat Katalog
+        </a>
+      </div>
+    `;
+
+    cartTotalContainer.replaceChildren();
+    return;
+  }
+
+  let subtotal = 0;
+
+  cart.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "cart-item";
+
+    if (item.image) {
+      const image = document.createElement("img");
+      image.src = item.image;
+      image.alt = item.name || "Kue";
+
+      image.onerror = () => {
+        const placeholder = document.createElement("div");
+        placeholder.className = "cart-placeholder";
+        placeholder.textContent = "🍰";
+        image.replaceWith(placeholder);
+      };
+
+      row.appendChild(image);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "cart-placeholder";
+      placeholder.textContent = "🍰";
+      row.appendChild(placeholder);
+    }
+
+    const info = document.createElement("div");
+
+    const name = document.createElement("h3");
+    name.textContent = item.name || "Kue";
+
+    const price = document.createElement("small");
+    price.textContent = rupiah(item.price);
+
+    const quantity = document.createElement("div");
+    quantity.className = "quantity";
+
+    const minus = document.createElement("button");
+    minus.type = "button";
+    minus.textContent = "−";
+    minus.setAttribute("aria-label", "Kurangi jumlah");
+    minus.onclick = () => changeQuantity(item.id, -1);
+
+    const number = document.createElement("span");
+    number.textContent = item.quantity;
+
+    const plus = document.createElement("button");
+    plus.type = "button";
+    plus.textContent = "+";
+    plus.setAttribute("aria-label", "Tambah jumlah");
+    plus.onclick = () => changeQuantity(item.id, 1);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "remove-item";
+    remove.textContent = "Hapus";
+
+    remove.onclick = () => {
+      cart = cart.filter(
+        product => String(product.id) !== String(item.id)
+      );
+
+      saveCart();
+    };
+
+    quantity.append(minus, number, plus);
+    info.append(name, price, quantity, remove);
+
+    const lineTotal = document.createElement("strong");
+    lineTotal.style.fontSize = "12px";
+    lineTotal.textContent = rupiah(
+      item.price * item.quantity
+    );
+
+    row.append(info, lineTotal);
+    cartItemsContainer.appendChild(row);
+
+    subtotal += item.price * item.quantity;
+  });
+
+  cartTotalContainer.innerHTML = `
+    <div class="total-row">
+      <span>Subtotal</span>
+      <span>${rupiah(subtotal)}</span>
+    </div>
+
+    <p class="cart-note">
+      Subtotal belum termasuk ongkos kirim.
+      Keranjang tersimpan di browser dan belum
+      dikirim sebagai pesanan.
+    </p>
+
+    <a class="btn btn-primary"
+       style="width:100%"
+       href="./katalog.html">
+       Lanjut Pilih Kue
+    </a>
+  `;
+}
+
+/* UBAH JUMLAH PRODUK */
+
+function changeQuantity(id, change) {
+  const item = cart.find(
+    product => String(product.id) === String(id)
+  );
+
+  if (!item) return;
+
+  if (change > 0) {
+    const stock = Number(item.stock) || 0;
+
+    if (item.quantity >= stock) {
+      alert("Jumlah sudah mencapai stok yang tersedia.");
+      return;
+    }
+  }
+
+  item.quantity += change;
+
+  if (item.quantity <= 0) {
+    cart = cart.filter(
+      product => String(product.id) !== String(id)
+    );
+  }
+
+  saveCart();
+}
+
+/* BUKA DAN TUTUP KERANJANG */
+
+document.getElementById("openCart").addEventListener(
+  "click",
+  () => {
+    cart = readCart();
+    updateCartCount();
+    renderCart();
+    cartOverlay.classList.add("open");
+  }
+);
+
+document.getElementById("closeCart").addEventListener(
+  "click",
+  () => {
+    cartOverlay.classList.remove("open");
+  }
+);
+
+cartOverlay.addEventListener("click", event => {
+  if (event.target === cartOverlay) {
+    cartOverlay.classList.remove("open");
+  }
+});
+
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") {
     cartOverlay.classList.remove("open");
   }
 });
 
-/* AMBIL DATA PRODUK DARI CLOUDFLARE WORKER */
+/* SINKRONISASI ANTAR TAB */
+
+window.addEventListener("storage", event => {
+  if (event.key === CART_KEY) {
+    cart = readCart();
+    updateCartCount();
+    renderCart();
+  }
+});
+
+window.addEventListener("cakeOrderCartUpdated", () => {
+  cart = readCart();
+  updateCartCount();
+  renderCart();
+});
+
+/* AMBIL PRODUK DARI CLOUDFLARE WORKER */
 
 async function loadProducts() {
   try {
@@ -1248,10 +1686,12 @@ async function loadProducts() {
   }
 }
 
+/* INISIALISASI */
+
 updateCartCount();
 renderCart();
 loadProducts();
-</script>
-
+  
+  </script>
 </body>
 </html>
