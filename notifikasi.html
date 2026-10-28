@@ -899,64 +899,79 @@
         await loadOrders();
       }, "✕ Batalkan Pesanan");
   }
-    async function updateOrderStatus(id, newStatus, button) {
-      const order = orders.find(
-        item => String(orderId(item)) === String(id)
+    
+async function updateOrderStatus(id, newStatus, button) {
+  const order = orders.find(
+    item => String(orderId(item)) === String(id)
+  );
+
+  const transitions = {
+    delivering: {
+      from: "processing",
+      confirm: "Mulai pengantaran pesanan ini?",
+      buttonLabel: "🛵 Mulai Pengantaran"
+    },
+    completed: {
+      from: "delivering",
+      confirm: "Konfirmasi pesanan sudah selesai diantar?",
+      buttonLabel: "✓ Pesanan Selesai"
+    }
+  };
+
+  const transition = transitions[newStatus];
+
+  if (
+    !order ||
+    !transition ||
+    orderStatus(order) !== transition.from ||
+    paymentStatus(order) !== "paid"
+  ) {
+    showNotice("Status pesanan tidak sesuai untuk tindakan ini.", "error");
+    return;
+  }
+
+  if (!confirm(transition.confirm)) return;
+
+  await runOrderAction(
+    button,
+    "Memperbarui...",
+    async () => {
+      const data = await apiRequest(
+        `/api/cashier/orders/${encodeURIComponent(id)}/status`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ order_status: newStatus })
+        }
       );
 
-      const transitions = {
-        delivering: {
-          from: "processing",
-          confirm: "Ubah status pesanan menjadi sedang diantar?",
-          buttonLabel: "🛵 Mulai Pengantaran"
-        },
-        completed: {
-          from: "delivering",
-          confirm: "Konfirmasi bahwa pesanan sudah selesai diantar?",
-          buttonLabel: "✓ Pesanan Selesai"
-        }
-      };
+      showNotice(data.message || "Status berhasil diperbarui.");
 
-      const transition = transitions[newStatus];
+      // Ambil ulang status terbaru dari backend.
+      await loadOrders();
+    },
+    transition.buttonLabel
+  );
+}
 
-      if (
-        !order ||
-        !transition ||
-        orderStatus(order) !== transition.from ||
-        paymentStatus(order) !== "paid"
-      ) {
-        showNotice("Status pesanan tidak sesuai untuk tindakan ini.", "error");
-        return;
+async function runOrderAction(
+  button,
+  loadingText,
+  action,
+  originalText
+) {
+  button.disabled = true;
+  button.textContent = loadingText;
+
+  try {
+    await action();
+  } catch (error) {
+    showNotice(error.message || "Tindakan gagal dilakukan.", "error");
+
+    button.disabled = false;
+    button.textContent = originalText;
+  }
     }
-
-    if (!confirm(transition.confirm)) return;
-
-      await runOrderAction(button, "Memperbarui...", async () => {
-        const data = await apiRequest(
-          `/api/cashier/orders/${encodeURIComponent(id)}/status`,
-          {
-            method: "PATCH",
-            body: JSON.stringify({ order_status: newStatus })
-          }
-        );
-
-        showNotice(data.message || "Status pesanan berhasil diperbarui.");
-        await loadOrders();
-      }, transition.buttonLabel);
-    }
-
-    async function runOrderAction(button, loadingText, action, originalText) {
-      button.disabled = true;
-      button.textContent = loadingText;
-
-      try {
-        await action();
-      } catch (error) {
-        showNotice(error.message || "Tindakan gagal dilakukan.", "error");
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    }
+    
 
    document.getElementById("searchInput").addEventListener("input", event => {
       searchQuery = event.target.value.trim();
