@@ -292,10 +292,25 @@
               <input id="productCategory" name="category" maxlength="80" placeholder="Contoh: Cake">
             </div>
             <div class="field">
-              <label for="productImage">URL gambar</label>
-              <input id="productImage" name="image_url" type="url" placeholder="https://…">
-              <small>Gunakan URL gambar publik yang bisa diakses pelanggan.</small>
-            </div>
+  <label for="productImageFile">Foto Produk</label>
+  <input
+    id="productImageFile"
+    type="file"
+    accept="image/*"
+  >
+
+  <img
+    id="imagePreview"
+    alt="Preview foto produk"
+    style="display:none; width:150px; margin-top:10px; border-radius:10px;"
+  >
+
+  <button type="button" id="removeImageButton">
+    Hapus Foto
+  </button>
+
+  <small id="imageStatus">Belum ada foto dipilih.</small>
+</div>
             <div class="field span-2">
               <label for="productDescription">Deskripsi</label>
               <textarea id="productDescription" name="description" maxlength="2000" placeholder="Deskripsi singkat produk…"></textarea>
@@ -482,7 +497,7 @@
 
       const rows = filtered.map(p => {
         const isActive = Number(p.is_active) === 1;
-        const image = String(p.image_url || "");
+        const image = String(p.image_data || p.image_url || "");
         const imageMarkup = image
           ? `<img class="product-image" src="${escapeHtml(image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;product-image product-placeholder&quot;>🧁</div>'">`
           : `<div class="product-image product-placeholder">🧁</div>`;
@@ -514,13 +529,29 @@
       $("modalTitle").textContent = product ? "Edit produk" : "Tambah produk";
       $("saveProductButton").textContent = product ? "Simpan perubahan" : "Simpan produk";
       $("productForm").reset();
+      uploadedImageBase64 = "";
+$("productImageFile").value = "";
+$("imagePreview").src = "";
+$("imagePreview").style.display = "none";
+$("imageStatus").textContent = "Belum ada foto dipilih.";
       hideInlineMessage($("formMessage"));
       if (product) {
         $("productName").value = product.name || "";
         $("productPrice").value = product.price ?? 0;
         $("productStock").value = product.stock ?? 0;
         $("productCategory").value = product.category || "";
-        $("productImage").value = product.image_url || "";
+        uploadedImageBase64 = product.image_data || "";
+
+if (uploadedImageBase64) {
+  $("imagePreview").src = uploadedImageBase64;
+  $("imagePreview").style.display = "block";
+  $("imageStatus").textContent = "Foto produk tersimpan.";
+} else {
+  $("imagePreview").src = "";
+  $("imagePreview").style.display = "none";
+  $("imageStatus").textContent = "Belum ada foto dipilih.";
+}
+        
         $("productDescription").value = product.description || "";
       }
       $("productModalBackdrop").classList.remove("hidden");
@@ -645,20 +676,17 @@
         return;
       }
 
-      const imageUrl = $("productImage").value.trim();
-      if (imageUrl && !/^https?:\/\//i.test(imageUrl)) {
-        showInlineMessage($("formMessage"), "URL gambar harus dimulai dengan http:// atau https://.");
-        return;
-      }
+      
 
-      const body = {
-        name: $("productName").value.trim(),
-        price,
-        stock,
-        category: $("productCategory").value.trim(),
-        image_url: imageUrl,
-        description: $("productDescription").value.trim()
-      };
+     const body = {
+  name: $("productName").value.trim(),
+  price,
+  stock,
+  category: $("productCategory").value.trim(),
+  image_url: "",
+  image_data: uploadedImageBase64,
+  description: $("productDescription").value.trim()
+};
       if (!body.name) {
         showInlineMessage($("formMessage"), "Nama produk wajib diisi.");
         return;
@@ -725,6 +753,68 @@
     } else {
       showLogin();
     }
+
+    let uploadedImageBase64 = "";
+
+const productImageFile = document.getElementById("productImageFile");
+const imagePreview = document.getElementById("imagePreview");
+const imageStatus = document.getElementById("imageStatus");
+const removeImageButton = document.getElementById("removeImageButton");
+
+if (productImageFile) {
+  productImageFile.addEventListener("change", function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Pilih file gambar yang valid.");
+      this.value = "";
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Ukuran foto maksimal 10 MB.");
+      this.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      uploadedImageBase64 = reader.result;
+
+      if (imagePreview) {
+        imagePreview.src = uploadedImageBase64;
+        imagePreview.style.display = "block";
+      }
+
+      if (imageStatus) {
+        imageStatus.textContent = "Foto siap disimpan.";
+      }
+    };
+
+    reader.onerror = function () {
+      alert("Gagal membaca foto.");
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+if (removeImageButton) {
+  removeImageButton.addEventListener("click", function () {
+    uploadedImageBase64 = "";
+
+    if (productImageFile) productImageFile.value = "";
+    if (imagePreview) {
+      imagePreview.src = "";
+      imagePreview.style.display = "none";
+    }
+    if (imageStatus) {
+      imageStatus.textContent = "Belum ada foto dipilih.";
+    }
+  });
+}
   </script>
 </body>
 </html>
