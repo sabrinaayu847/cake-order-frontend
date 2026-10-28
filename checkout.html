@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Cake Order</title>
+
+  <style>
+    :root {
+      --pink: #d95f83;
+      --pink-light: #fff0f5;
+      --text: #382b30;
+      --muted: #776a70;
+      --border: #eadde2;
+      --white: #ffffff;
+      --bg: #fff9fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: bold;
+      color: var(--pink);
+      text-decoration: none;
+    }
+
+    header a.back {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    main {
+      width: min(1050px, 92%);
+      margin: 35px auto;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .intro {
+      color: var(--muted);
+      margin-top: 0;
+      line-height: 1.6;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: start;
+      margin-top: 25px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 19px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d9cbd1;
+      border-radius: 9px;
+      font: inherit;
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    input:focus, textarea:focus {
+      outline: 2px solid #f5c1d2;
+      border-color: var(--pink);
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 16px;
+      width: 100%;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--pink);
+      color: white;
+    }
+
+    .secondary {
+      background: var(--pink-light);
+      color: #a6385c;
+    }
+
+    .danger {
+      background: #fff0f0;
+      color: #b42318;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 13px 0;
+      border-bottom: 1px solid #f1e8ec;
+    }
+
+    .item:last-child {
+      border-bottom: 0;
+    }
+
+    .item-name {
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .price {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      padding-top: 18px;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .notice {
+      background: var(--pink-light);
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 15px 0;
+    }
+
+    .message {
+      display: none;
+      padding: 13px;
+      margin: 15px 0;
+      border-radius: 9px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fff0f0;
+      color: #a52222;
+    }
+
+    .message.success {
+      background: #edf9f0;
+      color: #176534;
+    }
+
+    .status {
+      background: #f8f3f5;
+      border-radius: 10px;
+      padding: 15px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px 10px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 25px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 750px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        margin-top: 24px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a class="brand" href="./home.html">Cake Order</a>
+    <a class="back" href="./catalog.html">← Kembali ke katalog</a>
+  </header>
+
+  <main>
+    <h1>Checkout</h1>
+    <p class="intro">
+      Lengkapi data pemesanan dan periksa kembali pesanan kamu sebelum dikirim.
+    </p>
+
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+
+    <section id="checkoutSection" class="layout">
+      <div>
+        <form id="checkoutForm" class="card">
+          <h2>Data pelanggan</h2>
+
+          <label for="customerName">Nama lengkap</label>
+          <input
+            id="customerName"
+            name="customer_name"
+            type="text"
+            minlength="2"
+            maxlength="100"
+            autocomplete="name"
+            required
+          >
+
+          <label for="customerPhone">Nomor telepon</label>
+          <input
+            id="customerPhone"
+            name="customer_phone"
+            type="tel"
+            minlength="8"
+            maxlength="25"
+            autocomplete="tel"
+            placeholder="Contoh: 081234567890"
+            required
+          >
+
+          <label for="customerAddress">Alamat pengiriman atau pengambilan</label>
+          <textarea
+            id="customerAddress"
+            name="customer_address"
+            minlength="3"
+            maxlength="500"
+            autocomplete="street-address"
+            placeholder="Masukkan alamat atau tulis metode pengambilan"
+            required
+          ></textarea>
+
+          <label for="customerNote">Catatan pesanan (opsional)</label>
+          <textarea
+            id="customerNote"
+            name="customer_note"
+            maxlength="1000"
+            placeholder="Contoh: tulisan pada kue atau catatan tambahan"
+          ></textarea>
+
+          <div class="notice">
+            Pastikan nama, nomor telepon, dan alamat sudah benar.
+            Harga dan stok produk akan diperiksa kembali oleh server saat
+            pesanan dibuat.
+          </div>
+
+          <button id="createOrderBtn" class="primary" type="submit">
+            Buat Pesanan
+          </button>
+        </form>
+      </div>
+
+      <aside>
+        <div class="card">
+          <h2>Ringkasan pesanan</h2>
+          <div id="cartItems"></div>
+          <div id="cartTotal" class="total">
+            <span>Total</span>
+            <span>Rp0</span>
+          </div>
+          <p id="cartHint" class="small"></p>
+        </div>
+      </aside>
+    </section>
+
+    <section id="orderSection" class="hidden">
+      <div class="card">
+        <h2>Pesanan kamu</h2>
+        <div id="orderStatus" class="status">Memuat status pesanan...</div>
+
+        <div class="notice">
+          Selesaikan pembayaran sesuai instruksi pembayaran resmi dari toko.
+          Tombol laporan pembayaran hanya memberi tahu kasir bahwa kamu
+          sudah membayar; tombol ini bukan bukti transfer dan tidak
+          otomatis mengonfirmasi pembayaran.
+        </div>
+
+        <button id="reportPaymentBtn" class="primary">
+          Saya Sudah Membayar
+        </button>
+
+        <button id="refreshOrderBtn" class="secondary">
+          Periksa Status Pesanan
+        </button>
+
+        <button id="cancelOrderBtn" class="danger">
+          Batalkan Pesanan
+        </button>
+
+        <button id="newOrderBtn" class="secondary hidden">
+          Kembali ke Katalog
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Cake Order · Pastikan detail pesanan sudah benar.
+  </footer>
+
+  <script>
+    const API_BASE =
+      "https://cake-order-backend.sabrinaayukartika.workers.dev";
+
+    const CART_KEY = "cakeOrderCart";
+    const ORDER_KEY = "cakeOrderCurrentOrder";
+
+    const rupiah = value =>
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(value || 0);
+
+    const $ = id => document.getElementById(id);
+
+    let cart = [];
+    let currentOrder = null;
+    let busy = false;
+
+    function showMessage(text, type = "success") {
+      const el = $("message");
+      el.textContent = text;
+      el.className = `message show ${type}`;
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function hideMessage() {
+      $("message").className = "message";
+      $("message").textContent = "";
+    }
+
+    function readCart() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+
+        if (!Array.isArray(saved)) return [];
+
+        return saved.map(item => ({
+          ...item,
+          id: Number(item.id),
+          quantity: Number(item.quantity ?? item.qty ?? 1),
+          price: Number(item.price)
+        })).filter(item =>
+          Number.isSafeInteger(item.id) &&
+          item.id > 0 &&
+          Number.isSafeInteger(item.quantity) &&
+          item.quantity > 0 &&
+          Number.isSafeInteger(item.price) &&
+          item.price >= 0
+        );
+      } catch {
+        return [];
+      }
+    }
+
+    function renderCart() {
+      cart = readCart();
+
+      const container = $("cartItems");
+      container.replaceChildren();
+
+      if (!cart.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Keranjang kamu masih kosong.";
+
+        const link = document.createElement("a");
+        link.href = "./catalog.html";
+        link.textContent = "Pilih produk di katalog";
+
+        empty.appendChild(document.createElement("br"));
+        empty.appendChild(link);
+        container.appendChild(empty);
+
+        $("cartTotal").innerHTML =
+          `<span>Total</span><span>${rupiah(0)}</span>`;
+
+        $("createOrderBtn").disabled = true;
+        $("cartHint").textContent = "";
+        return;
+      }
+
+      let total = 0;
+
+      for (const item of cart) {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const row = document.createElement("div");
+        row.className = "item";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("div");
+        name.className = "item-name";
+        name.textContent = item.name || "Produk";
+
+        const quantity = document.createElement("div");
+        quantity.className = "small";
+        quantity.textContent =
+          `${item.quantity} × ${rupiah(item.price)}`;
+
+        details.append(name, quantity);
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = rupiah(subtotal);
+
+        row.append(details, price);
+        container.appendChild(row);
+      }
+
+      $("cartTotal").innerHTML =
+        `<span>Total sementara</span><span>${rupiah(total)}</span>`;
+
+      $("createOrderBtn").disabled = false;
+      $("cartHint").textContent =
+        "Total akhir dihitung kembali oleh server.";
+    }
+
+    function setBusy(value) {
+      busy = value;
+
+      $("createOrderBtn").disabled = value || cart.length === 0;
+      $("reportPaymentBtn").disabled = value;
+      $("refreshOrderBtn").disabled = value;
+      $("cancelOrderBtn").disabled = value;
+    }
+
+    async function apiRequest(path, options = {}) {
+      const response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.token
+            ? { Authorization: `Bearer ${options.token}` }
+            : {}),
+          ...options.headers
+        }
+      });
+
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("Respons server tidak dapat dibaca.");
+      }
+
+      if (!response.ok || data.success === false) {
+        throw new Error(data.message || "Permintaan gagal.");
+      }
+
+      return data;
+    }
+
+    function saveCurrentOrder(order) {
+      currentOrder = order;
+      localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    }
+
+    function readCurrentOrder() {
+      try {
+        const order = JSON.parse(localStorage.getItem(ORDER_KEY) || "null");
+
+        if (
+          order &&
+          typeof order.order_code === "string" &&
+          typeof order.access_token === "string"
+        ) {
+          return order;
+        }
+      } catch {
+        // Data tersimpan tidak valid.
+      }
+
+      return null;
+    }
+
+    function statusLabel(order) {
+      if (
+        order.order_status === "cancelled" &&
+        order.payment_status === "failed"
+      ) {
+        return "Ditolak kasir";
+      }
+
+      const labels = {
+        pending_payment: "Menunggu pembayaran",
+        awaiting_verification: "Menunggu verifikasi kasir",
+        processing: "Pesanan sedang dibuat",
+        completed: "Pesanan selesai",
+        cancelled: "Pesanan dibatalkan"
+      };
+
+      return labels[order.order_status] || order.order_status;
+    }
+
+    function renderOrder(order) {
+      const status = $("orderStatus");
+      status.replaceChildren();
+
+      const addLine = (label, value) => {
+        const line = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = `${label}: `;
+        line.append(strong, document.createTextNode(value || "-"));
+        status.appendChild(line);
+      };
+
+      addLine("Kode pesanan", order.order_code);
+      addLine("Status", statusLabel(order));
+      addLine("Pembayaran", order.payment_status);
+      addLine("Total", rupiah(order.total_amount));
+
+      if (order.rejection_reason) {
+        addLine("Alasan penolakan", order.rejection_reason);
+      }
+
+      $("checkoutSection").classList.add("hidden");
+      $("orderSection").classList.remove("hidden");
+
+      const canReport =
+        order.order_status === "pending_payment" &&
+        order.payment_status === "unpaid";
+
+      const canCancel = canReport;
+
+      $("reportPaymentBtn").classList.toggle("hidden", !canReport);
+      $("cancelOrderBtn").classList.toggle("hidden", !canCancel);
+
+      $("newOrderBtn").classList.toggle(
+        "hidden",
+        !["completed", "cancelled"].includes(order.order_status)
+      );
+    }
+
+    async function refreshOrder() {
+      if (!currentOrder || busy) return;
+
+      hideMessage();
+      setBusy(true);
+
+      try {
+        const result = await apiRequest(
+          `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+          { token: currentOrder.access_token }
+        );
+
+        renderOrder(result.data);
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    $("checkoutForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (busy) return;
+
+      cart = readCart();
+
+      if (!cart.length) {
+        showMessage("Keranjang kamu masih kosong.", "error");
+        renderCart();
+        return;
+      }
+
+      const form = new FormData(event.currentTarget);
+
+      const body = {
+        customer_name: String(form.get("customer_name") || "").trim(),
+        customer_phone: String(form.get("customer_phone") || "").trim(),
+        customer_address: String(form.get("customer_address") || "").trim(),
+        customer_note: String(form.get("customer_note") || "").trim(),
+        items: cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity
+        }))
+      };
+
+      hideMessage();
+      setBusy(true);
+
+      try {
+        const result = await apiRequest("/api/orders", {
+          method: "POST",
+          body: JSON.stringify(body)
+        });
+
+        const order = {
+          order_code: result.data.order_code,
+          access_token: result.data.access_token
+        };
+
+        saveCurrentOrder(order);
+
+        // Kosongkan keranjang setelah server berhasil membuat pesanan.
+        localStorage.setItem(CART_KEY, JSON.stringify([]));
+        window.dispatchEvent(new Event("cakeOrderCartUpdated"));
+
+        showMessage("Pesanan berhasil dibuat.", "success");
+        await refreshOrderAfterCreate();
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        setBusy(false);
+        renderCart();
+      }
+    });
+
+    async function refreshOrderAfterCreate() {
+      const result = await apiRequest(
+        `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+        { token: currentOrder.access_token }
+      );
+
+      renderOrder(result.data);
+    }
+
+    $("reportPaymentBtn").addEventListener("click", async () => {
+      if (!currentOrder || busy) return;
+
+      const confirmed = confirm(
+        "Pastikan kamu sudah menyelesaikan pembayaran sesuai instruksi toko. Kirim laporan pembayaran?"
+      );
+
+      if (!confirmed) return;
+
+      hideMessage();
+      setBusy(true);
+
+      try {
+        await apiRequest(
+          `/api/orders/${encodeURIComponent(currentOrder.order_code)}/report-payment`,
+          {
+            method: "POST",
+            token: currentOrder.access_token,
+            body: JSON.stringify({})
+          }
+        );
+
+        showMessage(
+          "Laporan pembayaran terkirim. Tunggu verifikasi kasir.",
+          "success"
+        );
+
+        const result = await apiRequest(
+          `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+          { token: currentOrder.access_token }
+        );
+
+        renderOrder(result.data);
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    $("cancelOrderBtn").addEventListener("click", async () => {
+      if (!currentOrder || busy) return;
+
+      const confirmed = confirm(
+        "Yakin ingin membatalkan pesanan ini? Stok akan dikembalikan jika pembatalan berhasil."
+      );
+
+      if (!confirmed) return;
+
+      hideMessage();
+      setBusy(true);
+
+      try {
+        await apiRequest(
+          `/api/orders/${encodeURIComponent(currentOrder.order_code)}/cancel`,
+          {
+            method: "POST",
+            token: currentOrder.access_token,
+            body: JSON.stringify({})
+          }
+        );
+
+        showMessage("Pesanan berhasil dibatalkan.", "success");
+
+        const result = await apiRequest(
+          `/api/orders/${encodeURIComponent(currentOrder.order_code)}`,
+          { token: currentOrder.access_token }
+        );
+
+        renderOrder(result.data);
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    $("refreshOrderBtn").addEventListener("click", refreshOrder);
+
+    $("newOrderBtn").addEventListener("click", () => {
+      localStorage.removeItem(ORDER_KEY);
+      window.location.href = "./catalog.html";
+    });
+
+    // Saat halaman dibuka kembali, tampilkan pesanan terakhir yang tersimpan.
+    currentOrder = readCurrentOrder();
+
+    if (currentOrder) {
+      $("checkoutSection").classList.add("hidden");
+      $("orderSection").classList.remove("hidden");
+      refreshOrder();
+    } else {
+      renderCart();
+    }
+  </script>
+</body>
+</html>
