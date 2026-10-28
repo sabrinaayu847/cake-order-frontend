@@ -1,356 +1,352 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Katalog Kue | Cake Order</title>
-   <style>
-  :root {
-    --bg: #F3E0D2;
-    --surface: #fffaf7;
-    --surface-soft: #F5D8A0;
-    --ink: #4b2029;
-    --muted: #86656a;
-    --line: #e9c8c8;
-    --brand: #A0233D;
-    --brand-dark: #7d1b30;
-    --brand-soft: #DD9BA7;
-    --green: #26734d;
-    --green-soft: #e4f5eb;
-    --red: #A0233D;
-    --red-soft: #f9e7e9;
-    --shadow: 0 18px 50px rgba(94, 29, 48, .10);
-    --radius: 18px;
-  }
 
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-      BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  button, input, select {
-    font: inherit;
-  }
-
-  a {
-    color: inherit;
-  }
-
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 17px clamp(18px, 4vw, 54px);
-    background: rgba(221, 155, 167, .94);
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(14px);
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 850;
-    letter-spacing: -.025em;
-  }
-
-  .brand-mark {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    background: var(--brand);
-    color: white;
-    border-radius: 13px;
-    font-size: 1.3rem;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    padding: 11px 15px;
-    font-weight: 750;
-    transition: .16s ease;
-    text-decoration: none;
-  }
-
-  .btn-primary {
-    background: var(--brand);
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background: var(--brand-dark);
-  }
-
-  .btn-secondary {
-    background: var(--surface);
-    color: var(--ink);
-    border-color: var(--line);
-  }
-
-  .btn-secondary:hover {
-    background: var(--surface-soft);
-  }
-
-  main {
-    width: min(1200px, 100%);
-    margin: 0 auto;
-    padding: 35px clamp(18px, 4vw, 42px) 60px;
-  }
-
-  .page-heading {
-    margin-bottom: 27px;
-  }
-
-  .eyebrow {
-    color: var(--brand);
-    font-size: .75rem;
-    font-weight: 800;
-    letter-spacing: .13em;
-    text-transform: uppercase;
-  }
-
-  .page-heading h1 {
-    margin: 7px 0 8px;
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
-    letter-spacing: -.05em;
-  }
-
-  .page-heading p {
-    color: var(--muted);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  .catalog-panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-  }
-
-  .panel-head {
-    padding: 21px 22px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .panel-head h2 {
-    margin: 0 0 5px;
-    font-size: 1.12rem;
-    letter-spacing: -.02em;
-  }
-
-  .panel-head p {
-    color: var(--muted);
-    margin: 0;
-    font-size: .87rem;
-  }
-
-  .filters {
-    padding: 15px 22px;
-    display: flex;
-    gap: 11px;
-    border-bottom: 1px solid var(--line);
-    background: #fff8f5;
-  }
-
-  .search-wrap {
-    flex: 1;
-    min-width: 160px;
-  }
-
-  .search,
-  .filter-select {
-    width: 100%;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 12px 13px;
-    color: var(--ink);
-    background: white;
-    outline: none;
-  }
-
-  .search:focus,
-  .filter-select:focus {
-    border-color: var(--brand-soft);
-    box-shadow: 0 0 0 3px rgba(160, 35, 61, .10);
-  }
-
-  .filter-select {
-    width: auto;
-    min-width: 170px;
-  }
-
-  #productList {
-    padding: 22px;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  .product-card {
-    min-width: 0;
-    background: white;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-
-  .product-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(94, 29, 48, .10);
-  }
-
-  .product-card img,
-  .no-image {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-soft);
-    color: var(--muted);
-  }
-
-  .product-info {
-    padding: 16px;
-  }
-
-  .product-info h3 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-  }
-
-  .description {
-    color: var(--muted);
-    font-size: .85rem;
-    line-height: 1.5;
-    min-height: 40px;
-    margin-bottom: 12px;
-    overflow-wrap: anywhere;
-  }
-
-  .price {
-    color: var(--brand);
-    font-size: 1.1rem;
-    font-weight: 850;
-    margin: 0 0 9px;
-    overflow-wrap: anywhere;
-  }
-
-  .stock {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 9px;
-    border-radius: 999px;
-    background: var(--green-soft);
-    color: var(--green);
-    font-size: .78rem;
-    font-weight: 750;
-    margin: 0;
-  }
-
-  .stock:where(.out-of-stock) {
-    background: var(--red-soft);
-    color: var(--red);
-  }
-
-  .empty {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--muted);
-  }
-
-  footer {
-    padding: 25px 18px;
-    text-align: center;
-    color: var(--muted);
-    background: var(--surface);
-    border-top: 1px solid var(--line);
-  }
-
-  @media (max-width: 1000px) {
-    #productList {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  <style>
+    :root {
+      --bg: #F3E0D2;
+      --surface: #fffaf7;
+      --surface-soft: #F5D8A0;
+      --ink: #4b2029;
+      --muted: #86656a;
+      --line: #e9c8c8;
+      --brand: #A0233D;
+      --brand-dark: #7d1b30;
+      --brand-soft: #DD9BA7;
+      --green: #26734d;
+      --green-soft: #e4f5eb;
+      --red-soft: #f9e7e9;
+      --shadow: 0 18px 50px rgba(94, 29, 48, .10);
+      --radius: 18px;
     }
-  }
 
-  @media (max-width: 720px) {
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    a { color: inherit; }
+
     .topbar {
-      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px clamp(14px, 4vw, 54px);
+      background: rgba(221, 155, 167, .94);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      letter-spacing: -.025em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      background: var(--brand);
+      color: white;
+      border-radius: 13px;
+      font-size: 1.3rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 750;
+      transition: .16s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--brand-dark); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn-secondary:hover { background: var(--surface-soft); }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .cart-count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 23px;
+      height: 23px;
+      padding: 0 6px;
+      border-radius: 99px;
+      background: white;
+      color: var(--brand);
+      font-size: .8rem;
+      font-weight: 850;
     }
 
     main {
-      padding-top: 25px;
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      padding: 35px clamp(18px, 4vw, 42px) 60px;
+    }
+
+    .page-heading { margin-bottom: 27px; }
+
+    .eyebrow {
+      color: var(--brand);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .page-heading h1 {
+      margin: 7px 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      letter-spacing: -.05em;
+    }
+
+    .page-heading p {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .catalog-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-head {
+      padding: 21px 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      margin: 0 0 5px;
+      font-size: 1.12rem;
+      letter-spacing: -.02em;
+    }
+
+    .panel-head p {
+      color: var(--muted);
+      margin: 0;
+      font-size: .87rem;
     }
 
     .filters {
-      flex-direction: column;
-      padding: 14px;
+      padding: 15px 22px;
+      display: flex;
+      gap: 11px;
+      border-bottom: 1px solid var(--line);
+      background: #fff8f5;
     }
 
-    .filter-select {
+    .search-wrap { flex: 1; min-width: 160px; }
+
+    .search, .filter-select {
       width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      color: var(--ink);
+      background: white;
+      outline: none;
     }
+
+    .search:focus, .filter-select:focus {
+      border-color: var(--brand-soft);
+      box-shadow: 0 0 0 3px rgba(160, 35, 61, .10);
+    }
+
+    .filter-select { width: auto; min-width: 170px; }
 
     #productList {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      padding: 14px;
+      padding: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
     }
 
-    .product-card img,
-    .no-image {
-      height: 150px;
+    .product-card {
+      min-width: 0;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
 
-    .product-info {
-      padding: 12px;
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(94, 29, 48, .10);
     }
+
+    .product-card img, .no-image {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-soft);
+      color: var(--muted);
+    }
+
+    .product-info { padding: 16px; }
 
     .product-info h3 {
-      font-size: .95rem;
+      margin: 0 0 8px;
+      font-size: 1rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: .85rem;
+      line-height: 1.5;
+      min-height: 40px;
+      margin-bottom: 12px;
+      overflow-wrap: anywhere;
     }
 
     .price {
-      font-size: 1rem;
-    }
-  }
-
-  @media (max-width: 360px) {
-    #productList {
-      grid-template-columns: 1fr;
+      color: var(--brand);
+      font-size: 1.1rem;
+      font-weight: 850;
+      margin: 0 0 9px;
+      overflow-wrap: anywhere;
     }
 
-    .product-card img,
-    .no-image {
-      height: 200px;
+    .stock {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: .78rem;
+      font-weight: 750;
+      margin: 0 0 13px;
     }
-  }
-   </style>
+
+    .stock.out-of-stock {
+      background: var(--red-soft);
+      color: var(--brand);
+    }
+
+    .add-to-cart {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 25px 18px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      max-width: calc(100% - 30px);
+      padding: 13px 18px;
+      background: var(--ink);
+      color: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .toast[hidden] { display: none; }
+
+    @media (max-width: 1000px) {
+      #productList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .topbar { padding: 13px 16px; }
+      main { padding-top: 25px; }
+      .filters { flex-direction: column; padding: 14px; }
+      .filter-select { width: 100%; }
+
+      #productList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .product-card img, .no-image { height: 150px; }
+      .product-info { padding: 12px; }
+      .product-info h3 { font-size: .95rem; }
+      .price { font-size: 1rem; }
+      .nav-actions .btn { padding: 9px 10px; font-size: .85rem; }
+    }
+
+    @media (max-width: 360px) {
+      #productList { grid-template-columns: 1fr; }
+      .product-card img, .no-image { height: 200px; }
+    }
+  </style>
 </head>
+
 <body>
   <header class="topbar">
     <div class="brand">
@@ -358,24 +354,26 @@
       <span>Cake Order</span>
     </div>
 
-    <a href="./home.html" class="btn btn-secondary">
-      ← Halaman Utama
-    </a>
+    <nav class="nav-actions" aria-label="Navigasi utama">
+      <a href="./home.html" class="btn btn-secondary">← Beranda</a>
+      <a href="./home.html#keranjang" class="btn btn-primary">
+        🛒 Keranjang
+        <span id="cartCount" class="cart-count">0</span>
+      </a>
+    </nav>
   </header>
 
   <main>
     <section class="page-heading">
       <div class="eyebrow">MANIS DI SETIAP MOMEN</div>
       <h1>Katalog Kue Kami 🍰</h1>
-      <p>
-        Temukan kue favoritmu untuk menemani setiap momen spesial.
-      </p>
+      <p>Temukan kue favoritmu untuk menemani setiap momen spesial.</p>
     </section>
 
     <section class="catalog-panel">
       <div class="panel-head">
         <h2>Temukan Kue Favoritmu</h2>
-        <p>Lihat koleksi kue yang tersedia untukmu.</p>
+        <p>Pilih kue dan tambahkan ke keranjang belanja.</p>
       </div>
 
       <div class="filters">
@@ -384,16 +382,13 @@
             type="search"
             id="searchInput"
             class="search"
-            placeholder="⌕  Cari nama kue..."
+            placeholder="⌕ Cari nama kue..."
             aria-label="Cari produk"
           >
         </div>
 
-        <select
-          id="categoryFilter"
-          class="filter-select"
-          aria-label="Filter kategori"
-        >
+        <select id="categoryFilter" class="filter-select"
+          aria-label="Filter kategori">
           <option value="">Semua kategori</option>
         </select>
       </div>
@@ -404,21 +399,27 @@
     </section>
   </main>
 
+  <div id="toast" class="toast" role="status" hidden></div>
+
   <footer>
     <strong>Cake Order 🍰</strong>
     <p>Dibuat dengan ❤️ untuk momen manismu.</p>
   </footer>
 
-
   <script>
     const API_URL =
       "https://cake-order-backend.sabrinaayukartika.workers.dev";
 
+    const CART_KEY = "cakeOrderCart";
+
     const productList = document.getElementById("productList");
     const searchInput = document.getElementById("searchInput");
     const categoryFilter = document.getElementById("categoryFilter");
+    const cartCount = document.getElementById("cartCount");
+    const toast = document.getElementById("toast");
 
     let products = [];
+    let toastTimer;
 
     function rupiah(value) {
       return new Intl.NumberFormat("id-ID", {
@@ -441,6 +442,95 @@
       }
 
       return "";
+    }
+
+    function getCart() {
+      try {
+        const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        return Array.isArray(cart) ? cart : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartCount();
+      window.dispatchEvent(new Event("cakeOrderCartUpdated"));
+    }
+
+    function updateCartCount() {
+      const count = getCart().reduce((total, item) => {
+        return total + Math.max(0, Number(item.quantity) || 0);
+      }, 0);
+
+      cartCount.textContent = count;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.hidden = false;
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.hidden = true;
+      }, 2500);
+    }
+
+    function addToCart(productId) {
+      const product = products.find(
+        item => String(item.id) === String(productId)
+      );
+
+      if (!product) {
+        showToast("Produk tidak ditemukan. Muat ulang katalog.");
+        return;
+      }
+
+      const stock = Math.max(0, Number(product.stock) || 0);
+
+      if (stock <= 0) {
+        showToast("Maaf, stok produk ini sedang habis.");
+        return;
+      }
+
+      const cart = getCart();
+      const existing = cart.find(
+        item => String(item.id) === String(product.id)
+      );
+
+      const currentQuantity = existing
+        ? Math.max(0, Number(existing.quantity) || 0)
+        : 0;
+
+      if (currentQuantity >= stock) {
+        showToast("Jumlah di keranjang sudah mencapai stok.");
+        return;
+      }
+
+      if (existing) {
+        existing.quantity = currentQuantity + 1;
+        existing.price = Number(product.price) || 0;
+        existing.name = product.name || "Kue";
+        existing.image =
+          product.image_data || product.image_url || "";
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name || "Kue",
+          price: Number(product.price) || 0,
+          image: product.image_data || product.image_url || "",
+          quantity: 1
+        });
+      }
+
+      try {
+        saveCart(cart);
+        showToast((product.name || "Kue") + " ditambahkan ke keranjang!");
+      } catch (error) {
+        console.error(error);
+        showToast("Keranjang gagal disimpan. Periksa penyimpanan browser.");
+      }
     }
 
     function renderProducts() {
@@ -489,6 +579,104 @@
         } else {
           const placeholder = document.createElement("div");
           placeholder.className = "no-image";
+          placeholder.textContent = "Foto belum tersedia";
+          card.appendChild(placeholder);
+        }
+
+        const info = document.createElement("div");
+        info.className = "product-info";
+
+        const name = document.createElement("h3");
+        name.textContent = product.name || "Kue";
+
+        const description = document.createElement("p");
+        description.className = "description";
+        description.textContent =
+          product.description || "Kue pilihan untuk momen spesial.";
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = rupiah(Number(product.price) || 0);
+
+        const stock = document.createElement("p");
+        const stockAmount = Math.max(0, Number(product.stock) || 0);
+        const hasStock = stockAmount > 0;
+
+        stock.className = hasStock ? "stock" : "stock out-of-stock";
+        stock.textContent = hasStock
+          ? "Stok tersedia: " + stockAmount
+          : "Stok habis";
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.className = "btn btn-primary add-to-cart";
+        addButton.textContent = hasStock
+          ? "🛒 Tambah ke Keranjang"
+          : "Stok Habis";
+        addButton.disabled = !hasStock;
+        addButton.addEventListener("click", () => addToCart(product.id));
+
+        info.append(name, description, price, stock, addButton);
+        card.appendChild(info);
+        productList.appendChild(card);
+      });
+    }
+
+    async function loadProducts() {
+      try {
+        const response = await fetch(API_URL + "/api/products");
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data katalog.");
+        }
+
+        const result = await response.json();
+
+        products = Array.isArray(result)
+          ? result
+          : result.products || result.data || [];
+
+        const categories = [
+          ...new Set(
+            products.map(product => product.category).filter(Boolean)
+          )
+        ];
+
+        categories.sort().forEach(category => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categoryFilter.appendChild(option);
+        });
+
+        renderProducts();
+      } catch (error) {
+        productList.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "empty";
+        message.textContent =
+          "Katalog belum dapat dimuat. Silakan coba lagi nanti.";
+
+        productList.appendChild(message);
+        console.error(error);
+      }
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    categoryFilter.addEventListener("change", renderProducts);
+
+    window.addEventListener("storage", event => {
+      if (event.key === CART_KEY) updateCartCount();
+    });
+
+    window.addEventListener("cakeOrderCartUpdated", updateCartCount);
+
+    updateCartCount();
+    loadProducts();
+  </script>
+</body>
+</html>
           placeholder.textContent = "Foto belum tersedia";
           card.appendChild(placeholder);
         }
