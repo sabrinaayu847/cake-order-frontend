@@ -890,6 +890,10 @@
         status === "awaiting_verification" &&
         payment === "reported_paid";
 
+      const canCancel =
+  status === "pending_payment" &&
+  payment === "unpaid";
+
       const date =
         order.created_at ??
         order.createdAt ??
@@ -959,34 +963,49 @@
             </div>
           </div>
 
-          <div class="order-actions">
-            ${
-              canVerify
-                ? `
-                  <button
-                    class="btn btn-primary verify-button"
-                    type="button"
-                    data-id="${escapeHTML(id)}">
-                    ✓ Verifikasi Pembayaran
-                  </button>
-                `
-                : status === "processing"
-                  ? `
-                    <button class="btn btn-secondary"
-                      type="button" disabled>
-                      ✓ Pesanan Sedang Dibuat
-                    </button>
-                  `
-                  : status === "awaiting_verification"
-                    ? `
-                      <button class="btn btn-secondary"
-                        type="button" disabled>
-                        Menunggu Konfirmasi Pembayaran
-                      </button>
-                    `
-                    : ""
-            }
-          </div>
+          
+<div class="order-actions">
+  ${
+    canVerify
+      ? `
+        <button
+          class="btn btn-primary verify-button"
+          type="button"
+          data-id="${escapeHTML(id)}">
+          ✓ Verifikasi Pembayaran
+        </button>
+      `
+      : status === "processing"
+        ? `
+          <button class="btn btn-secondary"
+            type="button" disabled>
+            ✓ Pesanan Sedang Dibuat
+          </button>
+        `
+        : status === "awaiting_verification"
+          ? `
+            <button class="btn btn-secondary"
+              type="button" disabled>
+              Menunggu Konfirmasi Pembayaran
+            </button>
+          `
+          : ""
+  }
+
+  ${
+    canCancel
+      ? `
+        <button
+          class="btn btn-secondary cancel-order-button"
+          type="button"
+          data-id="${escapeHTML(id)}">
+          ✕ Batalkan Pesanan
+        </button>
+      `
+      : ""
+  }
+</div>
+  
         </article>
       `;
   
@@ -1090,7 +1109,95 @@
       button.textContent = "✓ Verifikasi Pembayaran";
     }
   }
+  
+async function cancelOrder(id, button) {
+  if (!id) {
+    showNotice("ID pesanan tidak ditemukan.", "error");
+    return;
+  }
 
+  const order = orders.find(item =>
+    String(orderId(item)) === String(id)
+  );
+
+  if (!order) {
+    showNotice("Data pesanan tidak ditemukan.", "error");
+    return;
+  }
+
+  if (
+    normalizeStatus(order.status) !== "pending_payment" ||
+    paymentStatus(order) !== "unpaid"
+  ) {
+    showNotice(
+      "Hanya pesanan yang belum dibayar yang dapat dibatalkan.",
+      "error"
+    );
+    return;
+  }
+
+  const confirmed = confirm(
+    `Batalkan pesanan #${orderNumber(order)}?\n\n` +
+    "Pesanan yang belum dibayar akan dibatalkan " +
+    "dan stok dikembalikan."
+  );
+
+  if (!confirmed) return;
+
+  const token = getToken();
+
+  if (!token) {
+    showNotice(
+      "Sesi kasir tidak ditemukan. Silakan login kembali.",
+      "error"
+    );
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Membatalkan...";
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/cashier/orders/${encodeURIComponent(id)}/cancel`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        `Pembatalan gagal (${response.status})`
+      );
+    }
+
+    showNotice(
+      `Pesanan #${orderNumber(order)} berhasil dibatalkan.`,
+      "info"
+    );
+
+    await loadOrders();
+
+  } catch (error) {
+    showNotice(
+      error.message || "Terjadi kesalahan saat membatalkan pesanan.",
+      "error"
+    );
+
+    button.disabled = false;
+    button.textContent = "✕ Batalkan Pesanan";
+  }
+  
   // ==========================================
   // FILTER, PENCARIAN, DAN REFRESH
   // ==========================================
@@ -1106,6 +1213,12 @@
     });
   });
 
+  document.querySelectorAll(".cancel-order-button").forEach(button => {
+  button.addEventListener("click", () => {
+    cancelOrder(button.dataset.id, button);
+  });
+});
+  
   searchInput.addEventListener("input", renderOrders);
   refreshButton.addEventListener("click", loadOrders);
 
