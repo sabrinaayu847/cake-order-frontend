@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout | Cake Order</title>
+  <title>Checkout | 𝐒𝐰𝐞𝐞𝐭𝐁𝐢𝐭𝐞</title>
 
 <style>
 :root {
@@ -582,7 +582,7 @@ footer {
   </main>
 
   <footer>
-    Cake Order · Pastikan detail pesanan sudah benar.
+    𝐒𝐰𝐞𝐞𝐭𝐁𝐢𝐭𝐞 · Pastikan detail pesanan sudah benar.
   </footer>
 
   <script>
@@ -686,7 +686,7 @@ footer {
         const quantity = document.createElement("div");
         quantity.className = "small";
         quantity.textContent =
-          `${item.quantity} × ${rupiah(item.price)}`;
+  `${item.quantity} × ${rupiah(item.price)}`;
 
         details.append(name, quantity);
 
@@ -1011,11 +1011,16 @@ async function refreshOrderAfterCreate() {
     });
 
     $("refreshOrderBtn").addEventListener("click", refreshOrder);
-
     $("newOrderBtn").addEventListener("click", () => {
-      localStorage.removeItem(ORDER_KEY);
-      window.location.href = "./catalog.html";
-    });
+  localStorage.removeItem(ORDER_KEY);
+  currentOrder = null;
+
+  $("orderSection").classList.add("hidden");
+  $("checkoutSection").classList.remove("hidden");
+
+  renderCart();
+  window.location.href = "./catalog.html";
+});
 
     // Saat halaman dibuka kembali, tampilkan pesanan terakhir yang tersimpan.
     currentOrder = readCurrentOrder();
