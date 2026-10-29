@@ -868,24 +868,51 @@ document.addEventListener("keydown", event => {
     }
 
     
-function renderProducts() {
-  productList.innerHTML = "";
 
-  if (!products.length) {
-    productList.innerHTML =
-      '<p class="empty">Belum ada produk.</p>';
+function renderProducts() {
+  productList.replaceChildren();
+
+  const keyword = searchInput.value.trim().toLowerCase();
+  const selectedCategory = categoryFilter.value.trim().toLowerCase();
+
+  const filteredProducts = products.filter((product) => {
+    const name = String(product.name || "").toLowerCase();
+    const description = String(product.description || "").toLowerCase();
+    const category = String(product.category || "").trim().toLowerCase();
+
+    const matchesSearch =
+      name.includes(keyword) ||
+      description.includes(keyword) ||
+      category.includes(keyword);
+
+    const matchesCategory =
+      !selectedCategory || category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  if (filteredProducts.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = products.length
+      ? "Kue tidak ditemukan. Coba kata kunci atau kategori lain."
+      : "Belum ada produk.";
+    productList.appendChild(empty);
     return;
   }
 
-  products.forEach((product) => {
+  filteredProducts.forEach((product) => {
     const card = document.createElement("article");
     card.className = "product-card";
 
     const image = document.createElement("img");
     image.className = "product-image";
-    image.src =
-      product.image_data || product.image_url || "";
+    image.src = safeImageUrl(product.image_data) ||
+                safeImageUrl(product.image_url);
     image.alt = product.name || "Kue";
+    image.onerror = () => {
+      image.style.display = "none";
+    };
 
     const info = document.createElement("div");
     info.className = "product-info";
@@ -894,20 +921,21 @@ function renderProducts() {
     name.textContent = product.name || "Tanpa nama";
 
     const description = document.createElement("p");
+    description.className = "description";
     description.textContent =
       product.description || "Tidak ada deskripsi";
 
     const price = document.createElement("p");
     price.className = "price";
-    price.textContent =
-      "Rp " + (Number(product.price) || 0).toLocaleString("id-ID");
+    price.textContent = rupiah(product.price);
 
-    const stockAmount = Number(product.stock) || 0;
+    const stockAmount = Math.max(0, Number(product.stock) || 0);
     const hasStock = stockAmount > 0;
 
     const stock = document.createElement("p");
+    stock.className = hasStock ? "stock" : "stock out-of-stock";
     stock.textContent = hasStock
-      ? "Stok: " + stockAmount
+      ? `Stok: ${stockAmount}`
       : "Stok habis";
 
     const addButton = document.createElement("button");
@@ -927,6 +955,7 @@ function renderProducts() {
     productList.appendChild(card);
   });
 }
+
 
 
     async function loadProducts() {
