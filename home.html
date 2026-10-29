@@ -152,64 +152,116 @@
       place-items: center;
     }
 
-    /* HERO */
+    
+/* HERO — SWEETBITE SOFT PEACH */
 
-    .hero {
-      background: linear-gradient(
-        115deg,
-        #f3dfd1,
-        #f9e9df 55%,
-        #edc7b7
-      );
-    }
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(255, 255, 255, 0.75) 0,
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 92% 85%,
+      rgba(237, 199, 183, 0.55) 0,
+      transparent 30%
+    ),
+    linear-gradient(
+      115deg,
+      #f3dfd1,
+      #f9e9df 55%,
+      #edc7b7
+    );
+}
 
-    .hero-inner {
-      max-width: 1250px;
-      margin: auto;
-      padding: 65px 5%;
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 35px;
-      align-items: center;
-    }
+/* Ornamen lingkaran lembut */
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+}
 
-    .eyebrow {
-      color: var(--brand);
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+.hero::before {
+  width: 230px;
+  height: 230px;
+  top: -105px;
+  right: -55px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.16);
+}
 
-    .hero h1 {
-      font-family: Georgia, serif;
-      font-size: clamp(38px, 4.5vw, 59px);
-      line-height: 1.1;
-      margin: 16px 0;
-      color: #4a1726;
-    }
+.hero::after {
+  width: 180px;
+  height: 180px;
+  bottom: -100px;
+  left: 35%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
 
-    .hero p {
-      color: #795861;
-      line-height: 1.8;
-      font-size: 16px;
-      max-width: 500px;
-      margin-bottom: 25px;
-    }
+/* Konten tetap di atas ornamen */
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1250px;
+  margin: auto;
+  padding: 65px 5%;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 35px;
+  align-items: center;
+}
 
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+.eyebrow {
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-    .hero-image {
-      width: 100%;
-      height: 340px;
-      object-fit: cover;
-      border-radius: 45% 45% 20px 20px;
-      box-shadow: var(--shadow);
-    }
+.hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(38px, 4.5vw, 59px);
+  line-height: 1.1;
+  margin: 16px 0;
+  color: #4a1726;
+}
+
+.hero p {
+  color: #795861;
+  line-height: 1.8;
+  font-size: 16px;
+  max-width: 500px;
+  margin-bottom: 25px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-image {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  border-radius: 45% 45% 20px 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: translateY(-4px);
+}
+
 
     /* SECTION PRODUK */
 
