@@ -159,6 +159,349 @@
       .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
       .top-actions .btn { padding: 9px 10px; }
     }
+    
+/* ========================================
+   SWEETBITE ADMIN DASHBOARD — SOFT THEME
+   ======================================== */
+
+/* Background utama */
+body {
+  background:
+    radial-gradient(
+      circle at 5% 8%,
+      rgba(255, 255, 255, 0.6),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 95% 75%,
+      rgba(237, 199, 183, 0.32),
+      transparent 28%
+    ),
+    linear-gradient(
+      120deg,
+      #f3dfd1 0%,
+      #f9e9df 55%,
+      #edc7b7 100%
+    );
+  background-attachment: fixed;
+  color: #4b2029;
+}
+
+/* Navbar */
+.topbar {
+  background: rgba(255, 250, 247, 0.94);
+  border-bottom: 1px solid rgba(233, 200, 200, 0.8);
+  box-shadow: 0 4px 18px rgba(94, 29, 48, 0.04);
+  backdrop-filter: blur(14px);
+}
+
+/* Judul halaman */
+.page-heading h1,
+.page-heading h2 {
+  color: #4a1726;
+  letter-spacing: -0.035em;
+}
+
+.page-heading p {
+  color: #80656a;
+  line-height: 1.7;
+}
+
+/* Kartu statistik */
+.stat-card {
+  background: rgba(255, 250, 247, 0.94);
+  border: 1px solid rgba(233, 200, 200, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(94, 29, 48, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(94, 29, 48, 0.1);
+}
+
+.stat-value {
+  color: #7d1b30;
+  font-weight: 850;
+}
+
+.stat-icon {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f7e6dd, #f2d4ca);
+}
+
+/* Panel utama dan tabel */
+.panel {
+  background: rgba(255, 250, 247, 0.96);
+  border: 1px solid rgba(233, 200, 200, 0.85);
+  border-radius: 21px;
+  box-shadow: 0 14px 38px rgba(94, 29, 48, 0.07);
+  overflow: hidden;
+}
+
+.panel-head {
+  background: linear-gradient(
+    120deg,
+    rgba(249, 238, 231, 0.95),
+    rgba(255, 250, 247, 0.98)
+  );
+  border-bottom: 1px solid #f0ded8;
+}
+
+.panel-head h2 {
+  color: #4a1726;
+}
+
+.panel-foot {
+  background: #fff8f5;
+  border-top: 1px solid #f0ded8;
+}
+
+/* Filter dan pencarian */
+.filters {
+  background: rgba(255, 248, 245, 0.92);
+  border-bottom: 1px solid #f0ded8;
+}
+
+input,
+select,
+textarea,
+.filter-select {
+  background-color: #fffdfb;
+  color: #4b2029;
+  border-color: #e9c8c8;
+  border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #a0233d;
+  box-shadow: 0 0 0 3px rgba(160, 35, 61, 0.1);
+}
+
+/* Header tabel */
+th {
+  background: #f9eee7;
+  color: #80656a;
+  border-bottom: 1px solid #f0ded8;
+}
+
+th,
+td {
+  border-bottom-color: #f3e4de;
+}
+
+tbody tr {
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #fff5ef;
+}
+
+/* Produk dalam tabel */
+.product-image {
+  border-radius: 13px;
+  border-color: #f0ded8;
+  box-shadow: 0 3px 9px rgba(94, 29, 48, 0.05);
+}
+
+.product-placeholder {
+  background: #fff3ed;
+  border: 1px solid #f0ded8;
+  border-radius: 13px;
+}
+
+.product-name {
+  color: #4a1726;
+}
+
+.product-description {
+  color: #806c68;
+}
+
+.price {
+  color: #8d2039;
+}
+
+/* Label kategori */
+.category-chip {
+  background: #f5d8a0;
+  color: #6f2638;
+  border: 1px solid rgba(240, 205, 144, 0.65);
+}
+
+.status-chip {
+  border-radius: 999px;
+}
+
+.status-chip.active {
+  background: #e4f5eb;
+  color: #26734d;
+}
+
+.status-chip.inactive {
+  background: #f2ece8;
+  color: #76645a;
+}
+
+/* Tombol aksi */
+.btn {
+  border-radius: 12px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(94, 29, 48, 0.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #a0233d, #7d1b30);
+  border-color: transparent;
+  color: #fffaf7;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.btn-secondary,
+.btn-outline {
+  background: #fff8f5;
+  color: #7d1b30;
+  border: 1px solid #e9c8c8;
+}
+
+/* Tombol aksi pada tabel */
+.row-actions {
+  gap: 8px;
+}
+
+/* Tampilan saat data kosong */
+.empty-state {
+  color: #806c68;
+  background: rgba(255, 248, 245, 0.45);
+}
+
+.empty-state strong {
+  color: #4a1726;
+}
+
+.empty-icon {
+  filter: saturate(0.85);
+}
+
+/* Modal */
+.modal-backdrop {
+  background: rgba(65, 30, 38, 0.48);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  background: #fffaf7;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  box-shadow: 0 24px 80px rgba(65, 30, 38, 0.22);
+}
+
+.modal-head {
+  background: linear-gradient(120deg, #f9eee7, #fffaf7);
+  border-bottom-color: #f0ded8;
+}
+
+.modal-head h2 {
+  color: #4a1726;
+}
+
+.modal-body {
+  background: #fffaf7;
+}
+
+.modal-actions .btn,
+.confirm-actions .btn {
+  border-radius: 12px;
+}
+
+/* Notifikasi toast */
+.toast-area {
+  gap: 10px;
+}
+
+.toast {
+  background: #fffaf7;
+  color: #4b2029;
+  border: 1px solid #f0ded8;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(94, 29, 48, 0.12);
+}
+
+.toast.error {
+  background: #fff3f4;
+  border-color: #e7b0bc;
+  color: #a0233d;
+}
+
+.toast.success {
+  background: #f0faf3;
+  border-color: #cce8d6;
+  color: #26734d;
+}
+
+/* Loading */
+.loading {
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .stat-card {
+    border-radius: 16px;
+  }
+
+  .panel {
+    border-radius: 17px;
+  }
+
+  .panel-head {
+    background: #f9eee7;
+  }
+
+  .modal {
+    border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .btn,
+  tbody tr {
+    transition: none;
+  }
+
+  .stat-card:hover,
+  .btn:hover {
+    transform: none;
+  }
+    }
+    
   </style>
 </head>
 <body>
