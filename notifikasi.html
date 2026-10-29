@@ -245,6 +245,55 @@
         flex: 1 1 auto;
       }
     }
+
+    .product-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-image {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #fff8f5;
+  border: 1px solid #f0ded8;
+  flex-shrink: 0;
+}
+
+.product-image-placeholder {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff8f5;
+  flex-shrink: 0;
+  font-size: 26px;
+}
+
+.product-details {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.product-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.product-meta {
+  color: #806c68;
+  font-size: 13px;
+  }
   </style>
 </head>
 
@@ -741,21 +790,62 @@
           order.products ??
           [];
 
-        const itemsHTML =
-          Array.isArray(items) && items.length
-            ? items.map(item => {
-                const name = item.product_name ??
-                  item.name ??
-                  item.title ??
-                  "Produk";
+        
+const itemsHTML =
+  Array.isArray(items) && items.length
+    ? `<div class="product-list">${
+        items.map(item => {
+          const name =
+            item.product_name ?? item.name ?? item.title ?? "Produk";
 
-                const quantity = item.quantity ??
-                  item.qty ??
-                  1;
+          const quantity = Number(item.quantity ?? item.qty ?? 1);
+          const price = Number(item.unit_price ?? item.price ?? 0);
 
-                return `${escapeHTML(name)} × ${escapeHTML(quantity)}`;
-              }).join("\n")
-            : "Detail produk tidak tersedia";
+          // Dukung URL gambar dan data gambar Base64.
+          let image = item.image_url ?? item.image_data ?? "";
+
+          if (
+            typeof image === "string" &&
+            image &&
+            !image.startsWith("data:") &&
+            !/^https?:\/\//i.test(image)
+          ) {
+            image = "";
+          }
+
+          const safeImage = escapeHTML(image);
+
+          return `
+            <div class="product-row">
+              ${
+                safeImage
+                  ? `<img
+                       class="product-image"
+                       src="${safeImage}"
+                       alt="${escapeHTML(name)}"
+                       loading="lazy"
+                       onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+                     >
+                     <div class="product-image-placeholder" hidden>🍰</div>`
+                  : `<div class="product-image-placeholder">🍰</div>`
+              }
+
+              <div class="product-details">
+                <div class="product-name">${escapeHTML(name)}</div>
+                <div class="product-meta">
+                  ${escapeHTML(quantity)} × ${escapeHTML(formatRupiah(price))}
+                </div>
+                <div class="product-meta">
+                  Subtotal: ${escapeHTML(
+                    formatRupiah(item.subtotal ?? price * quantity)
+                  )}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("")
+      }</div>`
+    : "Detail produk tidak tersedia";
 
         const rejectionReason = order.rejection_reason
           ? `
