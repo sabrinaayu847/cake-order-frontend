@@ -443,7 +443,160 @@ footer {
   }
 
   
+/* ===== BACKGROUND CHECKOUT SELARAS DENGAN HOME ===== */
+body {
+  background:
+    radial-gradient(
+      circle at 5% 10%,
+      rgba(255, 255, 255, 0.55) 0,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 95% 75%,
+      rgba(237, 199, 183, 0.35) 0,
+      transparent 28%
+    ),
+    linear-gradient(
+      120deg,
+      #f3dfd1 0%,
+      #f9e9df 55%,
+      #edc7b7 100%
+    );
+  background-attachment: fixed;
+  color: var(--ink);
+}
+
+/* ===== HEADER CHECKOUT ===== */
+header {
+  background: rgba(255, 250, 247, 0.94);
+  border-bottom: 1px solid rgba(233, 200, 200, 0.75);
+  backdrop-filter: blur(12px);
+}
+
+/* ===== AREA UTAMA ===== */
+main {
+  position: relative;
+}
+
+/* ===== CARD CHECKOUT ===== */
+.card {
+  background: rgba(255, 250, 247, 0.94);
+  border: 1px solid rgba(233, 200, 200, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(94, 29, 48, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: 0 16px 38px rgba(94, 29, 48, 0.11);
+}
+
+/* ===== JUDUL ===== */
+h1,
+h2 {
+  color: #4a1726;
+}
+
+p {
+  color: var(--muted);
+}
+
+/* ===== INPUT FORM ===== */
+input,
+textarea,
+select {
+  background: #fffdfb;
+  color: var(--ink);
+  border: 1px solid #e9c8c8;
+  border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #a0233d;
+  box-shadow: 0 0 0 3px rgba(160, 35, 61, 0.1);
+}
+
+/* ===== TOTAL PEMBAYARAN ===== */
+.total {
+  color: #7d1b30;
+  background: linear-gradient(
+    120deg,
+    #f7e6dd,
+    #f9eee7
+  );
+  border: 1px solid #edc7b7;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+/* ===== NOTICE / INFORMASI ===== */
+.notice {
+  background: #fff3ed;
+  color: #795861;
+  border: 1px solid #f0d4c8;
+  border-radius: 14px;
+}
+
+/* ===== ITEM PESANAN ===== */
+.item {
+  border-bottom: 1px solid rgba(233, 200, 200, 0.7);
+  padding-bottom: 12px;
+}
+
+.price {
+  color: #a0233d;
+  font-weight: 700;
+}
+
+/* ===== QR PEMBAYARAN ===== */
+.payment-card {
+  background: rgba(255, 250, 247, 0.96);
+}
+
+.payment-qr {
+  background: #ffffff;
+  border: 1px solid #e9c8c8;
+  border-radius: 14px;
+  box-shadow: 0 5px 18px rgba(94, 29, 48, 0.07);
+}
+
+/* ===== TOMBOL ===== */
+button,
+.btn {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover,
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .card {
+    border-radius: 17px;
+    box-shadow: 0 8px 24px rgba(94, 29, 48, 0.07);
+  }
+  }
+  
+
+  
 </style>
+
 </head>
 
 <body>
