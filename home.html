@@ -654,6 +654,101 @@
         font-size: 35px;
       }
     }
+    
+/* POPUP CREDIT */
+.credit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(30, 10, 20, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.credit-overlay.open {
+  display: flex;
+}
+
+.credit-panel {
+  width: min(420px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 26px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.credit-panel h2 {
+  font-family: Georgia, serif;
+  color: var(--brand);
+  margin: 8px 0;
+  font-size: 28px;
+}
+
+.credit-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.credit-list {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.credit-member {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff8f4;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 12px;
+}
+
+.credit-avatar {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+  font-size: 21px;
+}
+
+.credit-member strong {
+  display: block;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.credit-member small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.credit-close {
+  width: 100%;
+}
+
+@media (max-width: 360px) {
+  .nav-actions .btn {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+    }
+  
   </style>
 </head>
 
@@ -675,12 +770,22 @@
     <a href="#tentang">Tentang Kami</a>
   </nav>
 
-  <div class="nav-actions">
-    <button class="cart-button" id="openCart" aria-label="Buka keranjang">
-      🛒
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
+  
+<div class="nav-actions">
+  <button
+    class="btn btn-outline"
+    id="openCredit"
+    type="button"
+  >
+    ♡ Credit
+  </button>
+
+  <button class="cart-button" id="openCart" aria-label="Buka keranjang">
+    🛒
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</div>
+  
 </header>
 
 <main>
@@ -825,6 +930,68 @@
 </div>
 
 
+<!-- POPUP CREDIT -->
+<div
+  class="credit-overlay"
+  id="creditOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="creditTitle"
+>
+  <section class="credit-panel">
+    <div style="font-size: 38px;">🍰♡</div>
+
+    <h2 id="creditTitle">Our Team</h2>
+
+    <p class="credit-subtitle">
+      SweetBite dibuat dengan kerja sama,
+      kreativitas, dan cinta dari kelompok kami.
+    </p>
+
+    <div class="credit-list">
+      <div class="credit-member">
+        <div class="credit-avatar">🎀</div>
+        <div>
+          <strong>Nama Anggota 1</strong>
+          <small>Anggota Kelompok</small>
+        </div>
+      </div>
+
+      <div class="credit-member">
+        <div class="credit-avatar">🌷</div>
+        <div>
+          <strong>Nama Anggota 2</strong>
+          <small>Anggota Kelompok</small>
+        </div>
+      </div>
+
+      <div class="credit-member">
+        <div class="credit-avatar">🧁</div>
+        <div>
+          <strong>Nama Anggota 3</strong>
+          <small>Anggota Kelompok</small>
+        </div>
+      </div>
+
+      <div class="credit-member">
+        <div class="credit-avatar">🍓</div>
+        <div>
+          <strong>Nama Anggota 4</strong>
+          <small>Anggota Kelompok</small>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary credit-close"
+      id="closeCredit"
+    >
+      Tutup ♡
+    </button>
+  </section>
+</div>
+  
                                     
   
   
@@ -1209,6 +1376,31 @@ document.addEventListener("keydown", event => {
   }
 });
 
+
+/* BUKA DAN TUTUP POPUP CREDIT */
+const creditOverlay = document.getElementById("creditOverlay");
+
+document.getElementById("openCredit").addEventListener("click", () => {
+  creditOverlay.classList.add("open");
+});
+
+document.getElementById("closeCredit").addEventListener("click", () => {
+  creditOverlay.classList.remove("open");
+});
+
+creditOverlay.addEventListener("click", event => {
+  if (event.target === creditOverlay) {
+    creditOverlay.classList.remove("open");
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    creditOverlay.classList.remove("open");
+  }
+});
+  
+  
 /* SINKRONISASI */
 function refreshCart() {
   cart = readCart();
