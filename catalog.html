@@ -583,6 +583,102 @@ footer {
   background: #fffaf7;
   }
     
+/* ===== HERO SLIDER KATALOG ===== */
+.catalog-hero {
+  position: relative;
+  width: 100%;
+  margin: 0 auto 32px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #f9e9df;
+  box-shadow: 0 12px 30px rgba(94, 29, 48, 0.08);
+}
+
+.catalog-hero-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.6s ease-in-out;
+  touch-action: pan-y;
+}
+
+.catalog-hero-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.catalog-hero-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+}
+
+/* Titik indikator */
+.catalog-hero-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border-radius: 30px;
+  background: rgba(255, 250, 247, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.catalog-hero-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #d6a6a2;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.catalog-hero-dot.active {
+  width: 22px;
+  border-radius: 10px;
+  background: #8d2039;
+}
+
+@media (max-width: 600px) {
+  .catalog-hero {
+    margin-bottom: 24px;
+    border-radius: 15px;
+  }
+
+  .catalog-hero-slide img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .catalog-hero-dots {
+    bottom: 10px;
+    gap: 7px;
+    padding: 7px 10px;
+  }
+
+  .catalog-hero-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .catalog-hero-dot.active {
+    width: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-hero-track {
+    transition: none;
+  }
+  }
+    
   </style>
 </head>
 
@@ -1183,6 +1279,68 @@ function renderProducts() {
 
     updateCartCount();
     loadProducts();
-  </script>
+ 
+(() => {
+  const hero = document.getElementById("catalogHero");
+  if (!hero || hero.dataset.initialized) return;
+
+  hero.dataset.initialized = "true";
+
+  const track = hero.querySelector(".catalog-hero-track");
+  const slides = [...hero.querySelectorAll(".catalog-hero-slide")];
+  const dots = [...hero.querySelectorAll(".catalog-hero-dot")];
+
+  if (slides.length !== dots.length || slides.length < 2) return;
+
+  let index = 0;
+  let timer;
+  let startX = 0;
+
+  function showSlide(nextIndex) {
+    index = (nextIndex + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("active", i === index);
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === index);
+      dot.setAttribute("aria-current", i === index ? "true" : "false");
+    });
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => showSlide(index + 1), 5000);
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+      showSlide(i);
+      startTimer();
+    });
+  });
+
+  track.addEventListener("touchstart", event => {
+    startX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  track.addEventListener("touchend", event => {
+    const distance = event.changedTouches[0].clientX - startX;
+
+    if (Math.abs(distance) > 45) {
+      showSlide(index + (distance < 0 ? 1 : -1));
+      startTimer();
+    }
+  }, { passive: true });
+
+  hero.addEventListener("mouseenter", () => clearInterval(timer));
+  hero.addEventListener("mouseleave", startTimer);
+
+  showSlide(0);
+  startTimer();
+})(); 
+    </script>
 </body>
 </html>
