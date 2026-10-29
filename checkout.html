@@ -785,6 +785,7 @@ footer {
     }
 
     
+
 function renderOrder(order) {
   const status = $("orderStatus");
   status.replaceChildren();
@@ -793,7 +794,7 @@ function renderOrder(order) {
     const line = document.createElement("div");
     const strong = document.createElement("strong");
     strong.textContent = `${label}: `;
-    line.append(strong, document.createTextNode(value || "-"));
+    line.append(strong, document.createTextNode(value ?? "-"));
     status.appendChild(line);
   };
 
@@ -801,49 +802,77 @@ function renderOrder(order) {
   addLine("Status", statusLabel(order));
   addLine("Pembayaran", order.payment_status);
 
-  if (order.rejection_reason) {
-    addLine("Alasan penolakan", order.rejection_reason);
-  }
+  const heading = document.createElement("h3");
+  heading.textContent = "Rincian produk";
+  status.appendChild(heading);
 
-  // Rincian produk pesanan
-  const itemsTitle = document.createElement("h3");
-  itemsTitle.textContent = "Rincian Pesanan";
-  itemsTitle.style.marginTop = "16px";
-  status.appendChild(itemsTitle);
+  const itemsContainer = document.createElement("div");
+  itemsContainer.style.display = "grid";
+  itemsContainer.style.gap = "12px";
 
   const items = Array.isArray(order.items) ? order.items : [];
 
-  if (items.length === 0) {
-    const empty = document.createElement("div");
-    empty.textContent = "Rincian produk belum tersedia.";
-    status.appendChild(empty);
-  } else {
-    for (const item of items) {
-      const row = document.createElement("div");
-      row.style.padding = "10px 0";
-      row.style.borderBottom = "1px solid #f1e3dc";
+  items.forEach((item) => {
+    const card = document.createElement("div");
+    card.style.display = "flex";
+    card.style.alignItems = "center";
+    card.style.gap = "12px";
+    card.style.padding = "10px";
+    card.style.border = "1px solid #eee";
+    card.style.borderRadius = "10px";
 
-      const name = document.createElement("div");
-      name.style.fontWeight = "bold";
-      name.textContent = item.product_name || "Produk";
+    const img = document.createElement("img");
+    const url = (item.image_url || "").trim();
+    const data = (item.image_data || "").trim();
 
-      const detail = document.createElement("div");
-      detail.textContent =
-        `${item.quantity} × ${rupiah(item.unit_price)}`;
+    img.alt = item.product_name || "Produk";
+    img.style.width = "76px";
+    img.style.height = "76px";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "8px";
+    img.style.flexShrink = "0";
 
-      const subtotal = document.createElement("div");
-      subtotal.style.fontWeight = "bold";
-      subtotal.textContent = rupiah(
-        item.subtotal ??
-        Number(item.unit_price) * Number(item.quantity)
-      );
-
-      row.append(name, detail, subtotal);
-      status.appendChild(row);
+    if (url) {
+      img.src = url;
+    } else if (data.startsWith("data:image/")) {
+      img.src = data;
+    } else if (data) {
+      img.src = `data:image/jpeg;base64,${data}`;
+    } else {
+      img.style.display = "none";
     }
+
+    img.onerror = () => {
+      img.style.display = "none";
+    };
+
+    const info = document.createElement("div");
+    const name = document.createElement("div");
+    name.textContent = item.product_name || "Produk";
+    name.style.fontWeight = "bold";
+
+    const quantity = document.createElement("div");
+    quantity.textContent = `Jumlah: ${item.quantity}`;
+
+    const price = document.createElement("div");
+    price.textContent = `Harga satuan: ${rupiah(item.unit_price)}`;
+
+    info.append(name, quantity, price);
+    card.append(img, info);
+    itemsContainer.appendChild(card);
+  });
+
+  if (items.length) {
+    status.appendChild(itemsContainer);
+  } else {
+    addLine("Rincian produk", "Belum tersedia");
   }
 
-  addLine("Total", rupiah(order.total_amount));
+  addLine("Total pesanan", rupiah(order.total_amount));
+
+  if (order.rejection_reason) {
+    addLine("Alasan penolakan", order.rejection_reason);
+  }
 
   $("checkoutSection").classList.add("hidden");
   $("orderSection").classList.remove("hidden");
@@ -852,16 +881,15 @@ function renderOrder(order) {
     order.order_status === "pending_payment" &&
     order.payment_status === "unpaid";
 
-  const canCancel = canReport;
-
   $("reportPaymentBtn").classList.toggle("hidden", !canReport);
-  $("cancelOrderBtn").classList.toggle("hidden", !canCancel);
+  $("cancelOrderBtn").classList.toggle("hidden", !canReport);
 
   $("newOrderBtn").classList.toggle(
     "hidden",
     !["completed", "cancelled"].includes(order.order_status)
   );
-    }
+}
+
     
     async function refreshOrder() {
   if (!currentOrder || busy) return;
