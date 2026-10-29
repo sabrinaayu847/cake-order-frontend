@@ -784,45 +784,85 @@ footer {
       return labels[order.order_status] || order.order_status;
     }
 
-    function renderOrder(order) {
-      const status = $("orderStatus");
-      status.replaceChildren();
+    
+function renderOrder(order) {
+  const status = $("orderStatus");
+  status.replaceChildren();
 
-      const addLine = (label, value) => {
-        const line = document.createElement("div");
-        const strong = document.createElement("strong");
-        strong.textContent = `${label}: `;
-        line.append(strong, document.createTextNode(value || "-"));
-        status.appendChild(line);
-      };
+  const addLine = (label, value) => {
+    const line = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = `${label}: `;
+    line.append(strong, document.createTextNode(value || "-"));
+    status.appendChild(line);
+  };
 
-      addLine("Kode pesanan", order.order_code);
-      addLine("Status", statusLabel(order));
-      addLine("Pembayaran", order.payment_status);
-      addLine("Total", rupiah(order.total_amount));
+  addLine("Kode pesanan", order.order_code);
+  addLine("Status", statusLabel(order));
+  addLine("Pembayaran", order.payment_status);
 
-      if (order.rejection_reason) {
-        addLine("Alasan penolakan", order.rejection_reason);
-      }
+  if (order.rejection_reason) {
+    addLine("Alasan penolakan", order.rejection_reason);
+  }
 
-      $("checkoutSection").classList.add("hidden");
-      $("orderSection").classList.remove("hidden");
+  // Rincian produk pesanan
+  const itemsTitle = document.createElement("h3");
+  itemsTitle.textContent = "Rincian Pesanan";
+  itemsTitle.style.marginTop = "16px";
+  status.appendChild(itemsTitle);
 
-      const canReport =
-        order.order_status === "pending_payment" &&
-        order.payment_status === "unpaid";
+  const items = Array.isArray(order.items) ? order.items : [];
 
-      const canCancel = canReport;
+  if (items.length === 0) {
+    const empty = document.createElement("div");
+    empty.textContent = "Rincian produk belum tersedia.";
+    status.appendChild(empty);
+  } else {
+    for (const item of items) {
+      const row = document.createElement("div");
+      row.style.padding = "10px 0";
+      row.style.borderBottom = "1px solid #f1e3dc";
 
-      $("reportPaymentBtn").classList.toggle("hidden", !canReport);
-      $("cancelOrderBtn").classList.toggle("hidden", !canCancel);
+      const name = document.createElement("div");
+      name.style.fontWeight = "bold";
+      name.textContent = item.product_name || "Produk";
 
-      $("newOrderBtn").classList.toggle(
-        "hidden",
-        !["completed", "cancelled"].includes(order.order_status)
+      const detail = document.createElement("div");
+      detail.textContent =
+        `${item.quantity} × ${rupiah(item.unit_price)}`;
+
+      const subtotal = document.createElement("div");
+      subtotal.style.fontWeight = "bold";
+      subtotal.textContent = rupiah(
+        item.subtotal ??
+        Number(item.unit_price) * Number(item.quantity)
       );
-    }
 
+      row.append(name, detail, subtotal);
+      status.appendChild(row);
+    }
+  }
+
+  addLine("Total", rupiah(order.total_amount));
+
+  $("checkoutSection").classList.add("hidden");
+  $("orderSection").classList.remove("hidden");
+
+  const canReport =
+    order.order_status === "pending_payment" &&
+    order.payment_status === "unpaid";
+
+  const canCancel = canReport;
+
+  $("reportPaymentBtn").classList.toggle("hidden", !canReport);
+  $("cancelOrderBtn").classList.toggle("hidden", !canCancel);
+
+  $("newOrderBtn").classList.toggle(
+    "hidden",
+    !["completed", "cancelled"].includes(order.order_status)
+  );
+    }
+    
     async function refreshOrder() {
   if (!currentOrder || busy) return;
 
