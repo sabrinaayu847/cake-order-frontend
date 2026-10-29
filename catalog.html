@@ -472,7 +472,43 @@
 body.cart-open {
   overflow: hidden;
   }
-      
+    
+.description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.5;
+  min-height: 4.5em;
+  max-height: 4.5em;
+  margin-bottom: 6px;
+}
+
+.description.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  max-height: none;
+  min-height: 0;
+  overflow: visible;
+}
+
+.description-toggle {
+  display: inline-block;
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: var(--brand);
+  padding: 0;
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.description-toggle:hover {
+  text-decoration: underline;
+  }
+    
   </style>
 </head>
 
@@ -870,6 +906,7 @@ document.addEventListener("keydown", event => {
     
 
 function renderProducts() {
+function renderProducts() {
   productList.replaceChildren();
 
   const keyword = searchInput.value.trim().toLowerCase();
@@ -897,6 +934,7 @@ function renderProducts() {
     empty.textContent = products.length
       ? "Kue tidak ditemukan. Coba kata kunci atau kategori lain."
       : "Belum ada produk.";
+
     productList.appendChild(empty);
     return;
   }
@@ -907,9 +945,11 @@ function renderProducts() {
 
     const image = document.createElement("img");
     image.className = "product-image";
-    image.src = safeImageUrl(product.image_data) ||
-                safeImageUrl(product.image_url);
+    image.src =
+      safeImageUrl(product.image_data) ||
+      safeImageUrl(product.image_url);
     image.alt = product.name || "Kue";
+
     image.onerror = () => {
       image.style.display = "none";
     };
@@ -920,10 +960,26 @@ function renderProducts() {
     const name = document.createElement("h3");
     name.textContent = product.name || "Tanpa nama";
 
+    // Deskripsi produk
     const description = document.createElement("p");
     description.className = "description";
     description.textContent =
       product.description || "Tidak ada deskripsi";
+
+    // Tombol untuk membuka dan menutup deskripsi
+    const toggleDescription = document.createElement("button");
+    toggleDescription.type = "button";
+    toggleDescription.className = "description-toggle";
+    toggleDescription.textContent = "…Selengkapnya";
+    toggleDescription.hidden = true;
+
+    toggleDescription.addEventListener("click", () => {
+      const expanded = description.classList.toggle("expanded");
+
+      toggleDescription.textContent = expanded
+        ? "Lebih sedikit"
+        : "…Selengkapnya";
+    });
 
     const price = document.createElement("p");
     price.className = "price";
@@ -933,7 +989,9 @@ function renderProducts() {
     const hasStock = stockAmount > 0;
 
     const stock = document.createElement("p");
-    stock.className = hasStock ? "stock" : "stock out-of-stock";
+    stock.className = hasStock
+      ? "stock"
+      : "stock out-of-stock";
     stock.textContent = hasStock
       ? `Stok: ${stockAmount}`
       : "Stok habis";
@@ -950,12 +1008,25 @@ function renderProducts() {
       addToCart(product.id);
     });
 
-    info.append(name, description, price, stock, addButton);
+    info.append(
+      name,
+      description,
+      toggleDescription,
+      price,
+      stock,
+      addButton
+    );
+
     card.append(image, info);
     productList.appendChild(card);
-  });
-}
 
+    // Periksa setelah elemen masuk ke DOM
+    requestAnimationFrame(() => {
+      toggleDescription.hidden =
+        description.scrollHeight <= description.clientHeight + 1;
+    });
+  });
+  }
 
 
     async function loadProducts() {
