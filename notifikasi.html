@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -81,7 +80,8 @@
       font-size: 14px;
     }
 
-    .filter-bar {
+    .filter-bar,
+    .order-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -106,11 +106,7 @@
       color: #75444b;
     }
 
-    .filter-button.active {
-      background: #9d4b56;
-      color: white;
-    }
-
+    .filter-button.active,
     .btn-primary {
       background: #9d4b56;
       color: white;
@@ -119,11 +115,6 @@
     .btn-secondary {
       background: #f5e7e3;
       color: #79464d;
-    }
-
-    .orders {
-      display: grid;
-      gap: 16px;
     }
 
     .order-header {
@@ -162,6 +153,11 @@
       color: #236b3b;
     }
 
+    .status.delivering {
+      background: #dcecff;
+      color: #245b91;
+    }
+
     .status.cancelled {
       background: #fbe1e1;
       color: #a52b2b;
@@ -184,12 +180,10 @@
       display: grid;
       gap: 7px;
       font-size: 14px;
+      overflow-wrap: anywhere;
     }
 
     .order-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
       margin-top: 16px;
     }
 
@@ -221,6 +215,7 @@
       border-radius: 12px;
       border: 1px solid #f0ded8;
       color: #806c68;
+      line-height: 1.6;
     }
 
     .refresh-row {
@@ -232,6 +227,11 @@
       margin-bottom: 12px;
     }
 
+    .orders {
+      display: grid;
+      gap: 16px;
+    }
+
     @media (max-width: 600px) {
       main {
         margin-top: 16px;
@@ -239,6 +239,10 @@
 
       .order-actions button {
         width: 100%;
+      }
+
+      .filter-bar button {
+        flex: 1 1 auto;
       }
     }
   </style>
@@ -343,6 +347,7 @@
       "https://cake-order-backend.sabrinaayukartika.workers.dev";
 
     const TOKEN_KEY = "cake_order_cashier_token";
+    const DELIVERY_KEY = "cake_order_delivery_statuses";
 
     let orders = [];
     let activeFilter = "all";
@@ -354,7 +359,10 @@
     }
 
     function orderId(order) {
-      return order.id ?? order.order_id ?? order.orderId ?? "";
+      return order.id ??
+        order.order_id ??
+        order.orderId ??
+        "";
     }
 
     function orderNumber(order) {
@@ -366,16 +374,54 @@
         "-";
     }
 
-    function orderStatus(order) {
-      return order.order_status ??
-        order.orderStatus ??
-        order.status ??
-        "unknown";
-    }
-
     function paymentStatus(order) {
       return order.payment_status ??
         order.paymentStatus ??
+        "unknown";
+    }
+
+    function getDeliveryStatuses() {
+      try {
+        const value = sessionStorage.getItem(DELIVERY_KEY);
+        const parsed = value ? JSON.parse(value) : {};
+
+        return parsed && typeof parsed === "object" &&
+          !Array.isArray(parsed)
+          ? parsed
+          : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveDeliveryStatuses(statuses) {
+      sessionStorage.setItem(
+        DELIVERY_KEY,
+        JSON.stringify(statuses)
+      );
+    }
+
+    function orderStatus(order) {
+      // Jika API menyediakan status tampilan, gunakan status tersebut.
+      if (order.display_status) {
+        return order.display_status;
+      }
+
+      const id = String(orderId(order));
+      const deliveryStatuses = getDeliveryStatuses();
+
+      // Backend tetap menyimpan processing saat sedang diantar.
+      if (
+        deliveryStatuses[id] === "delivering" &&
+        order.order_status === "processing" &&
+        paymentStatus(order) === "paid"
+      ) {
+        return "delivering";
+      }
+
+      return order.order_status ??
+        order.orderStatus ??
+        order.status ??
         "unknown";
     }
 
@@ -480,13 +526,9 @@
     }
 
     function statusClass(status) {
-      if (status === "completed" || status === "processing") {
-        return "processing";
-      }
-
-      if (status === "delivering") {
-        return "pending";
-      }
+      if (status === "completed") return "processing";
+      if (status === "delivering") return "delivering";
+      if (status === "processing") return "processing";
 
       if (
         status === "awaiting_verification" ||
@@ -495,9 +537,7 @@
         return "pending";
       }
 
-      if (status === "cancelled") {
-        return "cancelled";
-      }
+      if (status === "cancelled") return "cancelled";
 
       return "neutral";
     }
@@ -544,6 +584,7 @@
 
       const raw = await response.text();
       let data = {};
+
       try {
         data = raw ? JSON.parse(raw) : {};
       } catch {
@@ -551,20 +592,19 @@
       }
 
       if (!response.ok) {
-        const detail = data.message || data.error || data.error_description || raw;
         throw new Error(
-          `${detail || "Permintaan gagal"} [HTTP ${response.status}]`
+          `${data.message || data.error || "Permintaan gagal"} [HTTP ${response.status}]`
         );
       }
 
-      if (data && data.success === false) {
+      if (data?.success === false) {
         throw new Error(data.message || "Permintaan tidak berhasil.");
       }
 
       return data;
     }
 
-    async function loadOrders() {
+        async function loadOrders() {
       if (isLoading) return;
 
       isLoading = true;
@@ -575,8 +615,29 @@
 
       try {
         const data = await apiRequest("/api/cashier/orders");
-
         orders = extractOrders(data);
+
+        // Hapus status pengantaran lokal jika pesanan sudah selesai,
+        // dibatalkan, atau tidak lagi memenuhi kondisi pengantaran.
+        const deliveryStatuses = getDeliveryStatuses();
+
+        for (const order of orders) {
+          const id = String(orderId(order));
+
+          if (
+            order.order_status === "completed" ||
+            order.order_status === "cancelled" ||
+            (
+              order.order_status !== "processing" &&
+              order.order_status !== "delivering"
+            ) ||
+            paymentStatus(order) !== "paid"
+          ) {
+            delete deliveryStatuses[id];
+          }
+        }
+
+        saveDeliveryStatuses(deliveryStatuses);
 
         updateStats();
         renderOrders();
@@ -680,20 +741,30 @@
           order.products ??
           [];
 
-        const itemsHTML = Array.isArray(items) && items.length
-          ? items.map(item => {
-              const name = item.product_name ??
-                item.name ??
-                item.title ??
-                "Produk";
+        const itemsHTML =
+          Array.isArray(items) && items.length
+            ? items.map(item => {
+                const name = item.product_name ??
+                  item.name ??
+                  item.title ??
+                  "Produk";
 
-              const quantity = item.quantity ??
-                item.qty ??
-                1;
+                const quantity = item.quantity ??
+                  item.qty ??
+                  1;
 
-              return `${escapeHTML(name)} × ${escapeHTML(quantity)}`;
-            }).join("\n")
-          : "Detail produk tidak tersedia";
+                return `${escapeHTML(name)} × ${escapeHTML(quantity)}`;
+              }).join("\n")
+            : "Detail produk tidak tersedia";
+
+        const rejectionReason = order.rejection_reason
+          ? `
+            <div>
+              <strong>Alasan penolakan:</strong>
+              ${escapeHTML(order.rejection_reason)}
+            </div>
+          `
+          : "";
 
         return `
           <article class="order-card">
@@ -711,10 +782,27 @@
             </div>
 
             <div class="order-info">
-              <div><strong>Nama:</strong> ${escapeHTML(customerName(order))}</div>
-              <div><strong>No. HP:</strong> ${escapeHTML(customerPhone(order))}</div>
-              <div><strong>Alamat:</strong> ${escapeHTML(customerAddress(order))}</div>
-              <div><strong>Pembayaran:</strong> ${escapeHTML(paymentLabel(payment))}</div>
+              <div>
+                <strong>Nama:</strong>
+                ${escapeHTML(customerName(order))}
+              </div>
+
+              <div>
+                <strong>No. HP:</strong>
+                ${escapeHTML(customerPhone(order))}
+              </div>
+
+              <div>
+                <strong>Alamat:</strong>
+                ${escapeHTML(customerAddress(order))}
+              </div>
+
+              <div>
+                <strong>Pembayaran:</strong>
+                ${escapeHTML(paymentLabel(payment))}
+              </div>
+
+              ${rejectionReason}
             </div>
 
             <div class="order-items">
@@ -723,7 +811,9 @@
             </div>
 
             <div>
-              <strong>Total: ${escapeHTML(formatRupiah(orderTotal(order)))}</strong>
+              <strong>
+                Total: ${escapeHTML(formatRupiah(orderTotal(order)))}
+              </strong>
             </div>
 
             <div class="order-actions">
@@ -811,7 +901,7 @@
       });
     }
 
-    async function verifyOrder(id, button) {
+        async function verifyOrder(id, button) {
       const order = orders.find(
         item => String(orderId(item)) === String(id)
       );
@@ -821,20 +911,32 @@
         orderStatus(order) !== "awaiting_verification" ||
         paymentStatus(order) !== "reported_paid"
       ) {
-        showNotice("Pesanan tidak memenuhi syarat untuk diverifikasi.", "error");
+        showNotice(
+          "Pesanan tidak memenuhi syarat untuk diverifikasi.",
+          "error"
+        );
         return;
       }
 
       if (!confirm("Verifikasi pembayaran pesanan ini?")) return;
 
-      await runOrderAction(button, "Memverifikasi...", async () => {
-        const data = await apiRequest(
-          `/api/cashier/orders/${encodeURIComponent(id)}/verify`,
-          { method: "PATCH", body: JSON.stringify({}) }
-        );
-    showNotice(data.message || "Pembayaran berhasil diverifikasi.");
-        await loadOrders();
-      }, "✓ Verifikasi Pembayaran");
+      await runOrderAction(
+        button,
+        "Memverifikasi...",
+        async () => {
+          const data = await apiRequest(
+            `/api/cashier/orders/${encodeURIComponent(id)}/verify`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({})
+            }
+          );
+
+          showNotice(data.message || "Pembayaran berhasil diverifikasi.");
+          await loadOrders();
+        },
+        "✓ Verifikasi Pembayaran"
+      );
     }
 
     async function rejectOrder(id, button) {
@@ -847,7 +949,10 @@
         orderStatus(order) !== "awaiting_verification" ||
         paymentStatus(order) !== "reported_paid"
       ) {
-        showNotice("Pesanan tidak memenuhi syarat untuk ditolak.", "error");
+        showNotice(
+          "Pesanan tidak memenuhi syarat untuk ditolak.",
+          "error"
+        );
         return;
       }
 
@@ -855,138 +960,184 @@
         `Masukkan alasan penolakan pesanan #${orderNumber(order)}:`
       );
 
-    if (reason === null) return;
+      if (reason === null) return;
 
       if (reason.trim().length < 3 || reason.trim().length > 500) {
-        showNotice("Alasan penolakan harus 3–500 karakter.", "error");
-        return;
-      }
-
-      if (!confirm("Yakin ingin menolak pesanan ini? Stok akan dikembalikan.")) {
-        return;
-      }
-
-      await runOrderAction(button, "Menolak...", async () => {
-        const data = await apiRequest(
-          `/api/cashier/orders/${encodeURIComponent(id)}/reject`,
-          {
-            method: "PATCH",
-            body: JSON.stringify({ reason: reason.trim() })
-          }
+        showNotice(
+          "Alasan penolakan harus 3–500 karakter.",
+          "error"
         );
+        return;
+      }
 
-        showNotice(data.message || "Pesanan berhasil ditolak.");
-        await loadOrders();
-      }, "✕ Tolak Pesanan");
+      if (
+        !confirm(
+          "Yakin ingin menolak pesanan ini? Stok akan dikembalikan."
+        )
+      ) {
+        return;
+      }
+
+      await runOrderAction(
+        button,
+        "Menolak...",
+        async () => {
+          const data = await apiRequest(
+            `/api/cashier/orders/${encodeURIComponent(id)}/reject`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({ reason: reason.trim() })
+            }
+          );
+
+          showNotice(data.message || "Pesanan berhasil ditolak.");
+          await loadOrders();
+        },
+        "✕ Tolak Pesanan"
+      );
     }
 
     async function cancelOrder(id, button) {
       const order = orders.find(
-        item => String(orderId(item)) === String(id)  );
+        item => String(orderId(item)) === String(id)
+      );
 
       if (
         !order ||
         orderStatus(order) !== "pending_payment" ||
         paymentStatus(order) !== "unpaid"
       ) {
-        showNotice("Pesanan ini tidak dapat dibatalkan dari halaman ini.", "error");
+        showNotice(
+          "Pesanan ini tidak dapat dibatalkan dari halaman ini.",
+          "error"
+        );
         return;
       }
 
       if (!confirm("Yakin ingin membatalkan pesanan ini?")) return;
 
-      await runOrderAction(button, "Membatalkan...", async () => {
-        const data = await apiRequest(
-          `/api/cashier/orders/${encodeURIComponent(id)}/cancel`,
-          {
-            method: "POST",
-            body: JSON.stringify({})
-          }
-        );
+      await runOrderAction(
+        button,
+        "Membatalkan...",
+        async () => {
+          const data = await apiRequest(
+            `/api/cashier/orders/${encodeURIComponent(id)}/cancel`,
+            {
+              method: "POST",
+              body: JSON.stringify({})
+            }
+          );
 
-        showNotice(data.message || "Pesanan berhasil dibatalkan.");
-        await loadOrders();
-      }, "✕ Batalkan Pesanan");
-  }
-    
-async function updateOrderStatus(id, newStatus, button) {
-  const order = orders.find(
-    item => String(orderId(item)) === String(id)
-  );
-
-  const transitions = {
-    delivering: {
-      from: "processing",
-      confirm: "Mulai pengantaran pesanan ini?",
-      buttonLabel: "🛵 Mulai Pengantaran"
-    },
-    completed: {
-      from: "delivering",
-      confirm: "Konfirmasi pesanan sudah selesai diantar?",
-      buttonLabel: "✓ Pesanan Selesai"
+          showNotice(data.message || "Pesanan berhasil dibatalkan.");
+          await loadOrders();
+        },
+        "✕ Batalkan Pesanan"
+      );
     }
-  };
 
-  const transition = transitions[newStatus];
-
-  if (
-    !order ||
-    !transition ||
-    orderStatus(order) !== transition.from ||
-    paymentStatus(order) !== "paid"
-  ) {
-    showNotice("Status pesanan tidak sesuai untuk tindakan ini.", "error");
-    return;
-  }
-
-  if (!confirm(transition.confirm)) return;
-
-  await runOrderAction(
-    button,
-    "Memperbarui...",
-    async () => {
-      const data = await apiRequest(
-        `/api/cashier/orders/${encodeURIComponent(id)}/status`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({ order_status: newStatus })
-        }
+    async function updateOrderStatus(id, newStatus, button) {
+      const order = orders.find(
+        item => String(orderId(item)) === String(id)
       );
 
-      showNotice(data.message || "Status berhasil diperbarui.");
+      const currentStatus = order ? orderStatus(order) : "";
 
-      // Ambil ulang status terbaru dari backend.
-      await loadOrders();
-    },
-    transition.buttonLabel
-  );
-}
+      const transitions = {
+        delivering: {
+          from: "processing",
+          confirm: "Mulai pengantaran pesanan ini?",
+          buttonLabel: "🛵 Mulai Pengantaran"
+        },
+        completed: {
+          from: "delivering",
+          confirm: "Konfirmasi pesanan sudah selesai diantar?",
+          buttonLabel: "✓ Pesanan Selesai"
+        }
+      };
 
-async function runOrderAction(
-  button,
-  loadingText,
-  action,
-  originalText
-) {
-  button.disabled = true;
-  button.textContent = loadingText;
+      const transition = transitions[newStatus];
 
-  try {
-    await action();
-  } catch (error) {
-    showNotice(error.message || "Tindakan gagal dilakukan.", "error");
+      if (
+        !order ||
+        !transition ||
+        currentStatus !== transition.from ||
+        paymentStatus(order) !== "paid"
+      ) {
+        showNotice(
+          "Status pesanan tidak sesuai untuk tindakan ini.",
+          "error"
+        );
+        return;
+      }
 
-    button.disabled = false;
-    button.textContent = originalText;
-  }
+      if (!confirm(transition.confirm)) return;
+
+      await runOrderAction(
+        button,
+        "Memperbarui...",
+        async () => {
+          const data = await apiRequest(
+            `/api/cashier/orders/${encodeURIComponent(id)}/status`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({
+                order_status: newStatus
+              })
+            }
+          );
+
+          const deliveryStatuses = getDeliveryStatuses();
+
+          if (newStatus === "delivering") {
+            // Backend menyimpan processing, browser kasir
+            // menyimpan status tampilan delivering.
+            deliveryStatuses[String(id)] = "delivering";
+          } else {
+            // Status completed disimpan oleh backend.
+            delete deliveryStatuses[String(id)];
+          }
+
+          saveDeliveryStatuses(deliveryStatuses);
+
+          showNotice(data.message || "Status berhasil diperbarui.");
+          await loadOrders();
+        },
+        transition.buttonLabel
+      );
     }
-    
 
-   document.getElementById("searchInput").addEventListener("input", event => {
-      searchQuery = event.target.value.trim();
-      renderOrders();
-    });
+    async function runOrderAction(
+      button,
+      loadingText,
+      action,
+      originalText
+    ) {
+      button.disabled = true;
+      button.textContent = loadingText;
 
+      try {
+        await action();
+      } catch (error) {
+        showNotice(
+          error.message || "Tindakan gagal dilakukan.",
+          "error"
+        );
+
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }
+
+    // Pencarian pesanan.
+    document.getElementById("searchInput").addEventListener(
+      "input",
+      event => {
+        searchQuery = event.target.value.trim();
+        renderOrders();
+      }
+    );
+
+    // Filter status.
     document.querySelectorAll("[data-filter]").forEach(button => {
       button.addEventListener("click", () => {
         activeFilter = button.dataset.filter;
@@ -999,12 +1150,18 @@ async function runOrderAction(
       });
     });
 
-    document.getElementById("refreshButton").addEventListener("click", () => {
-      loadOrders();
-    });
+    // Tombol muat ulang.
+    document.getElementById("refreshButton").addEventListener(
+      "click",
+      () => {
+        loadOrders();
+      }
+    );
 
+    // Muat pesanan saat halaman dibuka.
     loadOrders();
-  // Perbarui daftar pesanan secara berkala.
+
+    // Perbarui daftar pesanan setiap 10 detik.
     window.setInterval(() => {
       if (!document.hidden) {
         loadOrders();
@@ -1013,4 +1170,3 @@ async function runOrderAction(
   </script>
 </body>
 </html>
-  
