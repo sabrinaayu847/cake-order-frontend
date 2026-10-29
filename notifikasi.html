@@ -946,6 +946,15 @@ const itemsHTML =
                      </button>`
                   : ""
               }
+              ${["completed", "cancelled"].includes(order.order_status) ? `
+  <button
+    class="btn-secondary"
+    type="button"
+    data-delete-order="${escapeHTML(id)}"
+  >
+    🗑️ Hapus Riwayat
+  </button>
+` : ""}
             </div>
           </article>
         `;
@@ -1252,6 +1261,31 @@ const itemsHTML =
         loadOrders();
       }
     }, 10000);
+
+    async function deleteOrderHistory(id) {
+  const confirmed = confirm(
+    "Yakin ingin menghapus riwayat pesanan ini secara permanen?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const result = await apiRequest(
+      `/api/cashier/orders/${encodeURIComponent(id)}`,
+      { method: "DELETE" }
+    );
+
+    showNotice(
+      result.message || "Riwayat pesanan berhasil dihapus."
+    );
+
+    await loadOrders();
+  } catch (error) {
+    showNotice(
+      error.message || "Gagal menghapus riwayat pesanan."
+    );
+  }
+        }
   </script>
 </body>
 </html>
