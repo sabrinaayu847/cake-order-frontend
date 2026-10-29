@@ -407,6 +407,40 @@
       return sessionStorage.getItem(TOKEN_KEY) || "";
     }
 
+    
+async function deleteOrderHistory(id) {
+  if (!id) {
+    showNotice("ID pesanan tidak ditemukan.", "error");
+    return;
+  }
+
+  const confirmed = confirm(
+    "Yakin ingin menghapus riwayat pesanan ini? Tindakan ini tidak dapat dibatalkan."
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await apiRequest(
+      `/api/cashier/orders/${encodeURIComponent(id)}`,
+      { method: "DELETE" }
+    );
+
+    // Hapus juga status pengantaran lokal untuk pesanan ini.
+    const deliveryStatuses = getDeliveryStatuses();
+    delete deliveryStatuses[String(id)];
+    saveDeliveryStatuses(deliveryStatuses);
+
+    showNotice("Riwayat pesanan berhasil dihapus.");
+    await loadOrders();
+  } catch (error) {
+    showNotice(
+      error.message || "Gagal menghapus riwayat pesanan.",
+      "error"
+    );
+  }
+}
+    
     function orderId(order) {
       return order.id ??
         order.order_id ??
@@ -1252,6 +1286,26 @@ const itemsHTML =
       }
     );
 
+    
+document.getElementById("ordersContainer").addEventListener(
+  "click",
+  async (event) => {
+    const button = event.target.closest("[data-delete-order]");
+
+    if (!button) return;
+
+    const id = button.dataset.deleteOrder;
+
+    button.disabled = true;
+
+    try {
+      await deleteOrderHistory(id);
+    } finally {
+      button.disabled = false;
+    }
+  }
+);
+    
     // Muat pesanan saat halaman dibuka.
     loadOrders();
 
@@ -1262,30 +1316,7 @@ const itemsHTML =
       }
     }, 10000);
 
-    async function deleteOrderHistory(id) {
-  const confirmed = confirm(
-    "Yakin ingin menghapus riwayat pesanan ini secara permanen?"
-  );
-
-  if (!confirmed) return;
-
-  try {
-    const result = await apiRequest(
-      `/api/cashier/orders/${encodeURIComponent(id)}`,
-      { method: "DELETE" }
-    );
-
-    showNotice(
-      result.message || "Riwayat pesanan berhasil dihapus."
-    );
-
-    await loadOrders();
-  } catch (error) {
-    showNotice(
-      error.message || "Gagal menghapus riwayat pesanan."
-    );
-  }
-        }
+    
   </script>
 </body>
 </html>
