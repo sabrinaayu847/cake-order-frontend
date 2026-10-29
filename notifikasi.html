@@ -816,33 +816,29 @@ const itemsHTML =
           const safeImage = escapeHTML(image);
 
           return `
-            <div class="product-row">
-              ${
-                safeImage
-                  ? `<img
-                       class="product-image"
-                       src="${safeImage}"
-                       alt="${escapeHTML(name)}"
-                       loading="lazy"
-                       onerror="this.hidden=true;this.nextElementSibling.hidden=false"
-                     >
-                     <div class="product-image-placeholder" hidden>🍰</div>`
-                  : `<div class="product-image-placeholder">🍰</div>`
-              }
+          return `
+  <div class="product-row">
+    ${
+      safeImage
+        ? `<img
+             class="product-image"
+             src="${safeImage}"
+             alt="${escapeHTML(name)}"
+             loading="lazy"
+             onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+           >
+           <div class="product-image-placeholder" hidden>🍰</div>`
+        : `<div class="product-image-placeholder">🍰</div>`
+    }
 
-              <div class="product-details">
-                <div class="product-name">${escapeHTML(name)}</div>
-                <div class="product-meta">
-                  ${escapeHTML(quantity)} × ${escapeHTML(formatRupiah(price))}
-                </div>
-                <div class="product-meta">
-                  Subtotal: ${escapeHTML(
-                    formatRupiah(item.subtotal ?? price * quantity)
-                  )}
-                </div>
-              </div>
-            </div>
-          `;
+    <div class="product-details">
+      <div class="product-name">${escapeHTML(name)}</div>
+      <div class="product-meta">
+        ${escapeHTML(quantity)} × ${escapeHTML(formatRupiah(price))}
+      </div>
+    </div>
+  </div>
+`;
         }).join("")
       }</div>`
     : "Detail produk tidak tersedia";
